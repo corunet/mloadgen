@@ -49,7 +49,7 @@ For windows and mac and you can:
  mvn clean install
 ```
 
-Once build is completed, copy target/mloadgen-&gtversion>.jar file to JMETER_HOME/lib/ext directory. You also need to replace the mongo library version shipped with JMeter to at least the same defined in the pom.xml. Nowadays Jmeter version 5.2 use the version 2.11.3, which is quite old for this plugin.
+Once build is completed, copy target/mloadgen-&gtversion>.jar file to JMETER_HOME/lib/ext directory. You also need to replace the mongo library version shipped with JMeter to at least the same defined in the pom.xml. Nowadays Jmeter version 5.2 use the version 2.11.3, which is quite old for this plugin and if you try to connect the modern mongo cluster.
 
 ### MLoadGenSampler
 
