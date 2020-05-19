@@ -61,6 +61,6 @@ Once build is completed, copy target/mloadgen-&gtversion>.jar file to JMETER_HOM
 * **collection** : Collection where we want to insert documents.
 * **document** : Document in JSON format we want to insert.
 
-Document will be converte into BSON Document and inserted in the collection. Collection name is validated, if it is not in the server, the collection will not be created. Just to avoid duplicated collections and missdirections.
+Document will be converted into BSON Document and inserted in the collection. The collection name is validated, if it is not in the server, the collection will not be created. Just to avoid duplicated collections and missdirections.
 
 ![MLoadGen Sampler](/Mloadgen_sampler.png)
