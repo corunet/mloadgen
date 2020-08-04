@@ -6,6 +6,7 @@ package net.coru.mloadgen;
 
 import static net.coru.mloadgen.MLoadGenConfigHelper.COLLECTION;
 import static net.coru.mloadgen.MLoadGenConfigHelper.DBNAME;
+import static net.coru.mloadgen.MLoadGenConfigHelper.DELETE_OPERATION;
 import static net.coru.mloadgen.MLoadGenConfigHelper.DOCUMENT;
 import static net.coru.mloadgen.MLoadGenConfigHelper.FILTER;
 import static net.coru.mloadgen.MLoadGenConfigHelper.INSERT_OPERATION;
@@ -28,6 +29,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -114,14 +116,24 @@ public class MLoadGen extends AbstractJavaSamplerClient {
       String result = null;
       if (INSERT_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
         String document = context.getParameter(DOCUMENT);
+        sampleResult.setSamplerData(document);
         result = runInsertCommand(collection, document);
       } else if (QUERY_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
         String filter = context.getParameter(FILTER);
+        sampleResult.setSamplerData(filter);
         result = runQueryCommand(collection, filter);
       } else if (UPDATE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
         String document = context.getParameter(DOCUMENT);
+        sampleResult.setSamplerData(document);
         String filter = context.getParameter(FILTER);
         result = runUpdateCommand(collection, filter, document);
+      } else if (DELETE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION)))
+      {
+        String filter = context.getParameter(FILTER);
+        sampleResult.setSamplerData(filter);
+        result = runDeleteCommand(collection, filter);
+      } else {
+        throw new IllegalArgumentException("Wrong operation " + context.getParameter(OPERATION));
       }
       sampleResult.setResponseData(result, StandardCharsets.UTF_8.name());
       sampleResult.setSuccessful(true);
@@ -171,6 +183,14 @@ public class MLoadGen extends AbstractJavaSamplerClient {
     Document mongoDocument = Document.parse(document);
 
     UpdateResult response = database.getCollection(collection).updateOne(mongoFilter, mongoDocument);
+
+    return response.toString();
+  }
+
+  private String runDeleteCommand(String collection, String filter) {
+    BasicDBObject mongoFilter = BasicDBObject.parse(filter);
+
+    DeleteResult response = database.getCollection(collection).deleteMany(mongoFilter);
 
     return response.toString();
   }
