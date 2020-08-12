@@ -2,21 +2,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-package net.coru.mloadgen;
+package net.coru.mloadgen.sampler;
 
-import static net.coru.mloadgen.MLoadGenConfigHelper.COLLECTION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DBNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DELETE_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DOCUMENT;
-import static net.coru.mloadgen.MLoadGenConfigHelper.FILTER;
-import static net.coru.mloadgen.MLoadGenConfigHelper.INSERT_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_HOSTNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_PASSWORD;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_PORT;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_USERNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.QUERY_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.UPDATE_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DBNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DELETE_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DOCUMENT;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.FILTER;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.INSERT_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_HOSTNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PASSWORD;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PORT;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.QUERY_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
