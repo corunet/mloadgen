@@ -8,22 +8,7 @@ import java.util.Set;
 
 public class JSchemaToken
 {
-	public enum TokenType
-	{
-		LCURLY,
-		RCURLY,
-		LSQUARE,
-		RSQUARE,
-		COMMA,
-		COLON,
-		STRING,
-		NUMBER,
-		TRUE,
-		FALSE,
-		NULL,
-		ERROR,
-		EOF
-	}
+
 
 	private TokenType _tokenType;
 	private String _value;

@@ -1,21 +1,15 @@
 package net.coru.mloadgen.extractor.jschema.parser;
 
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.COLON;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.COMMA;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.LCURLY;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.LSQUARE;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.RCURLY;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.RSQUARE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.COLON;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.COMMA;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.EOF;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.FALSE;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.LCURLY;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.LSQUARE;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.NULL;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.NUMBER;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.RCURLY;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.RSQUARE;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.STRING;
-import static net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType.TRUE;
+import net.coru.mloadgen.model.json.ObjectField;
 
 public class JSchemaParser
 {
@@ -105,7 +99,7 @@ public class JSchemaParser
 	}
 
 	public Object parseObject() {
-		HashMap<String, Object> map = new HashMap();
+		ObjectField map = ObjectField.builder().build();
 
 		if(match(STRING)) {
 			parseMember(map);
@@ -188,7 +182,7 @@ public class JSchemaParser
 		_currentToken = _tokenizer.next();
 	}
 
-	private boolean match( JSchemaToken.TokenType type )
+	private boolean match( TokenType type )
 	{
 		return _currentToken.getTokenType() == type;
 	}

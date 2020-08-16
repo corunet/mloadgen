@@ -1,22 +1,38 @@
 package net.coru.mloadgen.extractor.jschema.parser;
 
+import static java.util.Arrays.asList;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.*;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.COLON;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.COMMA;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.LCURLY;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.LSQUARE;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.RCURLY;
+import static net.coru.mloadgen.extractor.jschema.parser.TokenType.RSQUARE;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
-import net.coru.mloadgen.extractor.jschema.parser.JSchemaToken.TokenType;
+import java.util.Set;
 
 public class JSchemaTokenizer {
-	private String _string;
-	private int _offset;
-	private int _line;
-	private int _column;
+
+	private static final Set<Character> numberSet = new HashSet<>(asList('-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
+	private static final EnumSet<TokenType> specialCharSet = EnumSet.copyOf(asList(LCURLY, RCURLY, LSQUARE, RSQUARE, COMMA, COLON));
+	private static final Set<Character> constantSet = new HashSet<>(asList('t', 'f', 'n'));
+
+	private String string;
+	private int offset;
+	private int line;
+	private int column;
 	private char ch;
-	private int _errorCount;
+	private int errorCount;
 
 	public JSchemaTokenizer(String string) {
-		_string = string;
-		_offset = 0;
-		_line = 1;
-		_column = 0;
+		this.string = string;
+		offset = 0;
+		line = 1;
+		column = 0;
 		nextChar();
 	}
 
@@ -25,64 +41,26 @@ public class JSchemaTokenizer {
 	//========================================================================================
 
 	public JSchemaToken next() {
-		JSchemaToken T;
+		JSchemaToken schemaToken;
 		eatWhiteSpace(); // eat leading whitespace
-		switch(ch) {
-			case '"':
-				T = consumeString();
-				break;
-			case '-':
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				T = consumeNumber();
-				break;
-			case '{':
-				T = newToken(JSchemaToken.TokenType.LCURLY, "{");
-				nextChar();
-				break;
-			case '}':
-				T = newToken(JSchemaToken.TokenType.RCURLY, "}");
-				nextChar();
-				break;
-			case '[':
-				T = newToken(JSchemaToken.TokenType.LSQUARE, "[");
-				nextChar();
-				break;
-			case ']':
-				T = newToken(JSchemaToken.TokenType.RSQUARE, "]");
-				nextChar();
-				break;
-			case ',':
-				T = newToken(JSchemaToken.TokenType.COMMA, ",");
-				nextChar();
-				break;
-			case ':':
-				T = newToken(JSchemaToken.TokenType.COLON, ":");
-				nextChar();
-				break;
-			case 't':
-			case 'f':
-			case 'n':
-				T = consumeConstant();
-				break;
-			case '\0':
-				T = new JSchemaToken(JSchemaToken.TokenType.EOF, "EOF", _line, _column, _offset, 0.0);
-				_string = "";
-				break;
-			default:
+		if (ch == '"') {
+			schemaToken = consumeString();
+		} else if (numberSet.contains(ch)) {
+			schemaToken = consumeNumber();
+		} else if (specialCharSet.contains(valueOf(ch))) {
+			schemaToken = newToken(valueOf(ch), String.valueOf(ch));
+			nextChar();
+		} else if (constantSet.contains(ch)) {
+			schemaToken = consumeConstant();
+		} else if ('\0' == ch) {
+			schemaToken = new JSchemaToken(EOF, "EOF", line, column, offset, 0.0);
+			string = "";
+		} else {
 				// unrecognized JSchemaToken
-				T = errorToken( String.valueOf(ch) );
+				schemaToken = errorToken( String.valueOf(ch) );
 				nextChar();
 		}
-		return T;
+		return schemaToken;
 	}
 
 	//========================================================================================
@@ -91,7 +69,7 @@ public class JSchemaTokenizer {
 
 	private JSchemaToken consumeString() {
 		StringBuilder sb = new StringBuilder();
-		JSchemaToken T;
+		JSchemaToken schemaToken;
 		nextChar();
 		while(moreChars() && ch != '"') {
 			if(ch == '\\') {
@@ -149,18 +127,18 @@ public class JSchemaTokenizer {
 			}
 		}
 		if(ch == '"') {
-			T = newToken(TokenType.STRING, sb.toString());
+			schemaToken = newToken(STRING, sb.toString());
 		} else {
-			T = errorToken( sb.toString() );
+			schemaToken = errorToken( sb.toString() );
 		}
 		nextChar();
-		return T;
+		return schemaToken;
 	}
 
 	//needs to work for integers and decimals
 	private JSchemaToken consumeNumber() {
 		StringBuilder sb = new StringBuilder();
-		JSchemaToken T;
+		JSchemaToken schemaToken;
 		int num = 0;
 		int frac = 0;
 		int numFracDigit = 0;
@@ -217,8 +195,8 @@ public class JSchemaTokenizer {
 		if(neg) {
 			doubleValue = -doubleValue;
 		}
-		T = newNumberToken(TokenType.NUMBER, sb.toString(), doubleValue);
-		return T;
+		schemaToken = newNumberToken(NUMBER, sb.toString(), doubleValue);
+		return schemaToken;
 	}
 
 	private int consumeDigits(StringBuilder sb) {
@@ -245,7 +223,7 @@ public class JSchemaTokenizer {
 
 	private JSchemaToken consumeConstant() {
 		StringBuilder sb = new StringBuilder();
-		JSchemaToken T;
+		JSchemaToken schemaToken;
 		do {
 			sb.append(ch);
 			nextChar();
@@ -253,33 +231,33 @@ public class JSchemaTokenizer {
 		String str = sb.toString();
 		TokenType type = JSchemaToken.constants.get(str);
 		if(type == null) {
-			T = errorToken( str );
+			schemaToken = errorToken( str );
 		} else {
-			T = newToken(type, str);
+			schemaToken = newToken(type, str);
 		}
-		return T;
+		return schemaToken;
 	}
 
 	private JSchemaToken errorToken( String str )
 	{
-		_errorCount++;
-		return newToken( JSchemaToken.TokenType.ERROR, str);
+		errorCount++;
+		return newToken( ERROR, str);
 	}
 
 	public int getErrorCount() {
-		return _errorCount;
+		return errorCount;
 	}
 
 	//========================================================================================
 	//  Utility methods
 	//========================================================================================
 
-	private JSchemaToken newToken(JSchemaToken.TokenType type, String tokenValue) {
-		return new JSchemaToken(type, tokenValue, _line, _column, _offset + 1, 0);
+	private JSchemaToken newToken(TokenType type, String tokenValue) {
+		return new JSchemaToken(type, tokenValue, line, column, offset + 1, 0);
 	}
 
-	private JSchemaToken newNumberToken(JSchemaToken.TokenType type, String tokenValue, double num) {
-		return new JSchemaToken(type, tokenValue, _line, _column, _offset + 1, num);
+	private JSchemaToken newNumberToken(TokenType type, String tokenValue, double num) {
+		return new JSchemaToken(type, tokenValue, line, column, offset + 1, num);
 	}
 
 	private void eatWhiteSpace() {
@@ -290,15 +268,15 @@ public class JSchemaTokenizer {
 	}
 
 	private void nextChar() {
-		if(_offset < _string.length()) {
-			ch = _string.charAt(_offset);
+		if(offset < string.length()) {
+			ch = string.charAt(offset);
 			if(ch == '\n') // if we are at a newline character, bump the line number and reset the column
 			{
-				_line++;
-				_column = 0;
+				line++;
+				column = 0;
 			}
-			_offset = _offset + 1; // bump offset
-			_column = _column + 1; // bump column
+			offset = offset + 1; // bump offset
+			column = column + 1; // bump column
 		} else {
 			ch = '\0';
 		}
@@ -309,9 +287,9 @@ public class JSchemaTokenizer {
 	}
 
 	public List<JSchemaToken> tokenize() {
-		ArrayList<JSchemaToken> list = new ArrayList<JSchemaToken>();
+		ArrayList<JSchemaToken> list = new ArrayList<>();
 		JSchemaToken JSchemaToken = next();
-		while(JSchemaToken.getTokenType() != TokenType.EOF) {
+		while(JSchemaToken.getTokenType() != EOF) {
 			list.add(JSchemaToken);
 			JSchemaToken = next();
 		}
