@@ -3,17 +3,17 @@ package net.coru.mloadgen.model.json;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 @Value
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class StringField extends Field {
 
-	static final String type = "string";
-
-	String name;
-
 	String defaultValue;
 
-	String value;
+	@Builder
+	public StringField(String name, String defaultValue) {
+		super(name, "STRING");
+		this.defaultValue = defaultValue;
+	}
 }

@@ -462,7 +462,7 @@ public final class RandomTool {
 
   public static Object generateSeq(String fieldName, String fieldType, List<String> fieldValuesList, Map<String, Object> context) {
 
-    return net.coru.kloadgen.util.RandomTool.castValue(
+    return RandomTool.castValue(
         context.compute(fieldName, (fieldNameMap,
             seqObject) -> seqObject == null ? (fieldValuesList.isEmpty() ? 1L : Long.parseLong(fieldValuesList.get(0)))
             : ((Long) seqObject) + 1),

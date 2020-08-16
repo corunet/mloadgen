@@ -25,9 +25,9 @@ public class StatelessRandomTool {
             fieldValue
     );
 
-    Object value = net.coru.kloadgen.util.RandomTool.generateRandom(fieldType, valueLength, parameterList);
+    Object value = net.coru.mloadgen.util.RandomTool.generateRandom(fieldType, valueLength, parameterList);
     if ("seq".equals(fieldType)) {
-      value = net.coru.kloadgen.util.RandomTool.generateSeq(fieldName, fieldType, parameterList, context);
+      value = net.coru.mloadgen.util.RandomTool.generateSeq(fieldName, fieldType, parameterList, context);
     }
 
     return value;

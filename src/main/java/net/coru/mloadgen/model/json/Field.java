@@ -1,16 +1,15 @@
 package net.coru.mloadgen.model.json;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@Builder
+@Getter
 public abstract class Field {
 
-	String name;
+	private String name;
+	private String type;
 
-	String type;
-
-	Field value;
-
+	public Field(String name, String type) {
+		this.name = name;
+		this.type = type;
+	}
 }

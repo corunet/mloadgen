@@ -3,18 +3,20 @@ package net.coru.mloadgen.model.json;
 import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Singular;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 @Value
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class ArrayField extends Field{
 
-	static final String type = "array";
-
-	String name;
-
-	String defaultValue;
-
+	@Singular
 	List<Field> value;
+
+	@Builder
+	public ArrayField(String name, List<Field> value) {
+		super(name, "ARRAY");
+		this.value = value;
+	}
 }

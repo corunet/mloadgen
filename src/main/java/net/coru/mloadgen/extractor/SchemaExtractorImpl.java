@@ -6,7 +6,7 @@
 
 package net.coru.mloadgen.extractor;
 
-import net.coru.mloadgen.extractor.jschema.parser.JSchemaParser;
+import net.coru.mloadgen.extractor.parser.jschema.JSchemaParser;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.Field;
@@ -34,8 +34,8 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   @Override
   public List<Schema> schemaTypesList(File schemaFile) throws IOException {
     String readLine = readLineByLine(schemaFile.getPath());
-    JSchemaParser parser = new JSchemaParser(readLine);
-    return singletonList(parser.parse());
+    JSchemaParser parser = new JSchemaParser();
+    return singletonList(parser.parse(readLine));
   }
 
   private static String readLineByLine(String filePath) throws IOException {
@@ -53,12 +53,12 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   public List<FieldValueMapping> processSchema(Schema schema) {
     List<FieldValueMapping> attributeList = new ArrayList<>();
 
-    schema.getFields().forEach(field -> processField(field, attributeList));
+//    schema.getFields().forEach(field -> processField(field, attributeList));
     return attributeList;
   }
 
   private List<FieldValueMapping> extractInternalFields(ObjectField field) {
-    return processFieldList(field.getValue());
+    return Collections.emptyList(); // processFieldList(field.getValue());
   }
 
   private List<FieldValueMapping> processFieldList(List<Field> fieldList) {
@@ -76,18 +76,18 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   private List<FieldValueMapping> extractArrayInternalFields(String fieldName, Field innerField) {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     if (innerField instanceof ObjectField) {
-      for (Field arrayElementField : (List<Field>)innerField.getValue()) {
+     /* for (Field arrayElementField : (List<Field>)innerField.getValue()) {
         processField(arrayElementField, completeFieldList);
-      }
-    } else if (typesSet.contains(innerField.getElementType().getType())) {
+      }*/
+    }/* else if (typesSet.contains(innerField.getType())) {
       completeFieldList.add( new FieldValueMapping(fieldName,innerField.getType()+"-array"));
-    }
+    }*/
     return completeFieldList;
   }
 
   private void processField(Field innerField, List<FieldValueMapping> completeFieldList) {
     if (innerField instanceof ObjectField) {
-      processRecordFieldList(innerField.getName(), ".", extractInternalFields(innerField), completeFieldList);
+      processRecordFieldList(innerField.getName(), ".", extractInternalFields((ObjectField)innerField), completeFieldList);
     } else if (innerField instanceof ArrayField) {
       List<FieldValueMapping> internalFields = extractArrayInternalFields(innerField);
       if (checkIfRecord(innerField)) {
@@ -96,7 +96,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
         createArrayType(completeFieldList, internalFields, innerField.getName());
       }
     } else {
-      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField));
+      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType()));
     }
   }
 
