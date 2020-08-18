@@ -4,6 +4,7 @@ import java.util.Collections;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
 import net.coru.mloadgen.model.json.EnumField;
+import net.coru.mloadgen.model.json.MapField;
 import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
@@ -49,7 +50,6 @@ public class Fixtures {
               .name("contactData")
               .value(ObjectField
                   .builder()
-                  .name("address")
                   .property(BooleanField.builder().name("mobile").build())
                   .property(StringField.builder().name("email").build())
                   .build())
@@ -77,4 +77,26 @@ public class Fixtures {
               .build())
               .build())
           .build();
+
+  public static final Schema MEDIUM_MAP_SCHEMA =
+          Schema
+                  .builder()
+                  .field(StringField.builder().name("name").build())
+                  .field(StringField.builder().name("surname").build())
+                  .field(ObjectField
+                                 .builder()
+                                 .name("address")
+                                 .property(StringField.builder().name("street").build())
+                                 .property(NumberField.builder().name("number").build())
+                                 .build())
+                  .field(MapField
+                                 .builder()
+                                 .name("contactData")
+                                 .mapType(ObjectField
+                                                .builder()
+                                                .property(BooleanField.builder().name("mobile").build())
+                                                .property(StringField.builder().name("email").build())
+                                                .build())
+                                 .build())
+                  .build();
 }

@@ -11,11 +11,8 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class StringField extends Field {
 
-	String defaultValue;
-
 	@Builder
-	public StringField(String name, String defaultValue) {
+	public StringField(String name) {
 		super(name, "STRING");
-		this.defaultValue = defaultValue;
 	}
 }

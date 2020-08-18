@@ -14,7 +14,7 @@ public class NumberField extends Field {
 	String defaultValue;
 
 	@Builder
-	public NumberField(String name, String defaultValue, Number value) {
+	public NumberField(String name, String defaultValue) {
 		super(name, "NUMBER");
 		this.defaultValue = defaultValue;
 	}

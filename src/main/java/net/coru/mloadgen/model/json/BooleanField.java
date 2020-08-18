@@ -10,11 +10,8 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class BooleanField extends Field {
 
-	String defaultValue;
-
 	@Builder
-	public BooleanField(String name, String defaultValue) {
+	public BooleanField(String name) {
 		super(name, "BOOLEAN");
-		this.defaultValue = defaultValue;
 	}
 }

@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
 import net.coru.mloadgen.model.json.DateField;
 import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.Field;
+import net.coru.mloadgen.model.json.MapField;
 import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
@@ -47,7 +49,9 @@ public class JSchemaParser implements SchemaParser {
 			} else {
 				result = buildArray(fieldName, jsonNode);
 			}
-		} else  if (jsonNode.getNodeType().compareTo(JsonNodeType.OBJECT) == 0) {
+		} else if (Objects.nonNull(jsonNode.get("map_of"))) {
+			result = MapField.builder().name(fieldName).mapType(buildObject(jsonNode.get("map_of"))).build();
+		} else if (jsonNode.getNodeType().compareTo(JsonNodeType.OBJECT) == 0) {
 			result = buildObject(fieldName, jsonNode);
 		}
 		return result;
@@ -56,9 +60,10 @@ public class JSchemaParser implements SchemaParser {
 	private Field buildSimpleField(String fieldName, String textValue) {
 		Field field = null;
 		switch(textValue) {
+			case "int":
 			case "number": field = NumberField.builder().name(fieldName).build(); break;
 			case "boolean": field = BooleanField.builder().name(fieldName).build(); break;
-			case "date": field = DateField.builder().name(fieldName).build(); break;
+			case "date": field = DateField.builder().name(fieldName).format(textValue).build(); break;
 			default: field = StringField.builder().name(fieldName).build(); break;
 		}
 		return field;

@@ -2,6 +2,7 @@ package net.coru.mloadgen.extractor.parser.jschema;
 
 import static net.coru.mloadgen.extractor.parser.jschema.data.Fixtures.MEDIUM_ARRAY_SCHEMA;
 import static net.coru.mloadgen.extractor.parser.jschema.data.Fixtures.MEDIUM_ENUM_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.Fixtures.MEDIUM_MAP_SCHEMA;
 import static net.coru.mloadgen.extractor.parser.jschema.data.Fixtures.MEDIUM_SCHEMA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static net.coru.mloadgen.extractor.parser.jschema.data.Fixtures.SIMPLE_SCHEMA;
@@ -26,8 +27,9 @@ class JSchemaParserTest {
 						Arguments.of(resourceAsFile.getContent("/jsonschema/simpleSchema.jcs"), SIMPLE_SCHEMA),
 						Arguments.of(resourceAsFile.getContent("/jsonschema/mediumSchema.jcs"), MEDIUM_SCHEMA),
 						Arguments.of(resourceAsFile.getContent("/jsonschema/mediumArraySchema.jcs"), MEDIUM_ARRAY_SCHEMA),
-						Arguments.of(resourceAsFile.getContent("/jsonschema/mediumEnumSchema.jcs"), MEDIUM_ENUM_SCHEMA)
-		);
+						Arguments.of(resourceAsFile.getContent("/jsonschema/mediumEnumSchema.jcs"), MEDIUM_ENUM_SCHEMA),
+						Arguments.of(resourceAsFile.getContent("/jsonschema/mediumMapSchema.jcs"), MEDIUM_MAP_SCHEMA)
+				);
 	}
 
 	@ParameterizedTest
