@@ -5,9 +5,11 @@ import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;
+import lombok.ToString;
 import lombok.Value;
 
 @Value
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ObjectField extends Field{
 
@@ -20,7 +22,7 @@ public class ObjectField extends Field{
 	}
 
 	public static class ObjectFieldBuilder {
-		List<Field> properties = new ArrayList<>();
+		private List<Field> properties = new ArrayList<>();
 
 		public ObjectFieldBuilder properties(List<Field> fieldList) {
 			properties.addAll(fieldList);

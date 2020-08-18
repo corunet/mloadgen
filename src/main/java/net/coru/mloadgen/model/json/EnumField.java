@@ -4,10 +4,12 @@ import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;
+import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 @Value
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class EnumField extends Field {
 
