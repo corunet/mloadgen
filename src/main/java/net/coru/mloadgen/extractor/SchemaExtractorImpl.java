@@ -6,10 +6,13 @@
 
 package net.coru.mloadgen.extractor;
 
+import java.util.function.Consumer;
 import net.coru.mloadgen.extractor.parser.jschema.JSchemaParser;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
+import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.Field;
+import net.coru.mloadgen.model.json.MapField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 
@@ -20,6 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.Transformer;
 
 
 import static freemarker.template.utility.Collections12.singletonList;
@@ -53,65 +59,86 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   public List<FieldValueMapping> processSchema(Schema schema) {
     List<FieldValueMapping> attributeList = new ArrayList<>();
 
-//    schema.getFields().forEach(field -> processField(field, attributeList));
+    schema.getFields().forEach(field -> attributeList.addAll(processField(field)));
     return attributeList;
   }
 
   private List<FieldValueMapping> extractInternalFields(ObjectField field) {
-    return Collections.emptyList(); // processFieldList(field.getValue());
+    return processFieldList(field.getProperties());
   }
 
   private List<FieldValueMapping> processFieldList(List<Field> fieldList) {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     for(Field innerField : fieldList) {
-      processField(innerField, completeFieldList);
+      completeFieldList.addAll(processField(innerField));
     }
     return completeFieldList;
   }
 
-  private List<FieldValueMapping> extractArrayInternalFields(Field innerField) {
-    return extractArrayInternalFields(innerField.getName(), innerField);
+
+  private Transformer<FieldValueMapping, FieldValueMapping> fixName(String fieldName, String splitter) {
+    return fieldValue-> {
+      fieldValue.setFieldName(fieldName + splitter + fieldValue.getFieldName());
+      return fieldValue;
+    };
   }
 
-  private List<FieldValueMapping> extractArrayInternalFields(String fieldName, Field innerField) {
+  private List<FieldValueMapping> processField(Field innerField) {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
-    if (innerField instanceof ObjectField) {
-     /* for (Field arrayElementField : (List<Field>)innerField.getValue()) {
-        processField(arrayElementField, completeFieldList);
-      }*/
-    }/* else if (typesSet.contains(innerField.getType())) {
-      completeFieldList.add( new FieldValueMapping(fieldName,innerField.getType()+"-array"));
-    }*/
-    return completeFieldList;
-  }
-
-  private void processField(Field innerField, List<FieldValueMapping> completeFieldList) {
     if (innerField instanceof ObjectField) {
       processRecordFieldList(innerField.getName(), ".", extractInternalFields((ObjectField)innerField), completeFieldList);
     } else if (innerField instanceof ArrayField) {
-      List<FieldValueMapping> internalFields = extractArrayInternalFields(innerField);
-      if (checkIfRecord(innerField)) {
-        processRecordFieldList(innerField.getName(), "[].", internalFields, completeFieldList);
-      } else {
-        createArrayType(completeFieldList, internalFields, innerField.getName());
-      }
+      completeFieldList.addAll(extractArrayInternalFields((ArrayField) innerField));
+    } else if (innerField instanceof EnumField) {
+      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType()));
+    } else if (innerField instanceof MapField) {
+      completeFieldList.addAll(extractMapInternalFields((MapField) innerField));
     } else {
       completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType()));
     }
+    return completeFieldList;
   }
 
-  private void createArrayType(List<FieldValueMapping> completeFieldList, List<FieldValueMapping> internalFields, String fieldName) {
-    internalFields.get(0).setFieldName(fieldName);
-    completeFieldList.add(internalFields.get(0));
+  private List<FieldValueMapping> extractArrayInternalFields(ArrayField innerField) {
+    List<FieldValueMapping> completeFieldList = new ArrayList<>();
+    for (Field value : innerField.getValue()) {
+      if (value instanceof ObjectField) {
+        for (Field arrayElementField : (List<Field>) ((ObjectField) value).getProperties()) {
+          CollectionUtils.collect(
+            processField(arrayElementField),
+            fixName(innerField.getName(), "[]."),
+            completeFieldList);
+        }
+      } else {
+        completeFieldList.add(new FieldValueMapping(innerField.getName() + "[]", value.getType() + "-array"));
+      }
+    }
+    return completeFieldList;
   }
 
-  private boolean checkIfRecord(Field innerField) {
-    return innerField instanceof ObjectField;
+  private List<FieldValueMapping> extractMapInternalFields(MapField innerField) {
+    List<FieldValueMapping> completeFieldList = new ArrayList<>();
+    Field value = innerField.getMapType();
+    if (value instanceof ObjectField) {
+      for (Field arrayElementField : (List<Field>) ((ObjectField) value).getProperties()) {
+        CollectionUtils.collect(
+                processField(arrayElementField),
+                fixName(innerField.getName(), "[][]."),
+                completeFieldList);
+      }
+    } else {
+      completeFieldList.add(new FieldValueMapping(innerField.getName() + "[]", value.getType() + "-map"));
+    }
+    return completeFieldList;
   }
 
   private void processRecordFieldList(String fieldName, String splitter, List<FieldValueMapping> internalFields, List<FieldValueMapping> completeFieldList) {
     internalFields.forEach(internalField -> {
-      internalField.setFieldName(fieldName + splitter + internalField.getFieldName());
+      if (Objects.nonNull(internalField.getFieldName())) {
+        internalField.setFieldName(fieldName + splitter + internalField.getFieldName());
+      } else {
+        internalField.setFieldName(fieldName);
+      }
       completeFieldList.add(internalField);
     });
   }
