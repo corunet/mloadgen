@@ -50,7 +50,7 @@ import static net.coru.mloadgen.util.JsonSchemaKeyHelper.JSON_SCHEMA_NAMES;
 @Slf4j
 public class FileSubjectPropertyEditor extends PropertyEditorSupport implements ActionListener, TestBeanPropertyEditor, ClearGui {
 
-  private JComboBox<String> subjectNameComboBox;
+  private JComboBox<String> schemaTypeComboBox;
 
   private final JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
@@ -81,15 +81,18 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
   }
 
   private void init() {
-    subjectNameComboBox = new JComboBox<>();
-    subjectNameComboBox.setEditable(true);
+    schemaTypeComboBox = new JComboBox<>();
+    schemaTypeComboBox.setEditable(true);
+    schemaTypeComboBox.addItem("JSchema");
+    schemaTypeComboBox.addItem("JSON-Schema");
     panel.setLayout(new BorderLayout());
     openFileDialogButton.addActionListener(this::actionFileChooser);
     panel.add(openFileDialogButton, BorderLayout.LINE_END);
-    panel.add(subjectNameComboBox);
-    AutoCompletion.enable(subjectNameComboBox);
-    this.subjectNameComboBox.addActionListener(this);
+    panel.add(schemaTypeComboBox);
+    AutoCompletion.enable(schemaTypeComboBox);
+    this.schemaTypeComboBox.addActionListener(this);
   }
+
   public void actionFileChooser(ActionEvent event) {
 
     int returnValue = fileChooser.showDialog(panel, JMeterUtils.getResString("file_visualizer_open"));
@@ -97,17 +100,18 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     if (JFileChooser.APPROVE_OPTION == returnValue) {
       File subjectName = Objects.requireNonNull(fileChooser.getSelectedFile());
       try {
-        parserSchemaList = schemaExtractor.schemaTypesList(subjectName);
-        subjectNameComboBox.removeAllItems();
+        String schemaType = schemaTypeComboBox.getSelectedItem().toString();
+        parserSchemaList = schemaExtractor.schemaTypesList(schemaType, subjectName);
+        schemaTypeComboBox.removeAllItems();
         for (Schema schema : parserSchemaList) {
-          subjectNameComboBox.addItem(schema.getName());
+          schemaTypeComboBox.addItem(schema.getName());
         }
       } catch (IOException e) {
         JOptionPane.showMessageDialog(panel, "Can't read a file : " + e.getMessage(), "ERROR: Failed to retrieve properties!",
             JOptionPane.ERROR_MESSAGE);
         log.error(e.getMessage(), e);
       }
-      subjectNameComboBox.addFocusListener(new ComboFiller());
+      schemaTypeComboBox.addFocusListener(new ComboFiller());
     }
   }
 
@@ -115,21 +119,11 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     return IterableUtils.find(parserSchemaList, schema -> name.equalsIgnoreCase(schema.getName()));
   }
 
-  private Schema getRecordUnion(List<Schema> types, String name) {
-    Schema unionSchema = null;
-    for (Schema schema : types) {
-      if (schema.getName().equalsIgnoreCase(name)) {
-        unionSchema = schema;
-      }
-    }
-    return unionSchema;
-  }
-
   @Override
   public void actionPerformed(ActionEvent event) {
-    if (subjectNameComboBox.getItemCount() != 0) {
+    if (schemaTypeComboBox.getItemCount() != 0) {
 
-      String selectedItem = (String) subjectNameComboBox.getSelectedItem();
+      String selectedItem = (String) schemaTypeComboBox.getSelectedItem();
       Schema selectedSchema = getSelectedSchema(selectedItem);
 
       if (Objects.nonNull(selectedSchema)) {
@@ -180,7 +174,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
 
   @Override
   public String getAsText() {
-    return Objects.requireNonNull(this.subjectNameComboBox.getSelectedItem()).toString();
+    return Objects.requireNonNull(this.schemaTypeComboBox.getSelectedItem()).toString();
   }
 
   @Override
@@ -190,21 +184,21 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
 
   @Override
   public void setAsText(String text) throws IllegalArgumentException {
-    this.subjectNameComboBox.setSelectedItem(text);
+    this.schemaTypeComboBox.setSelectedItem(text);
   }
 
   @Override
   public void setValue(Object value) {
       if (value != null) {
-        this.subjectNameComboBox.setSelectedItem(value);
+        this.schemaTypeComboBox.setSelectedItem(value);
       } else {
-        this.subjectNameComboBox.setSelectedItem("");
+        this.schemaTypeComboBox.setSelectedItem("");
       }
   }
 
   @Override
   public Object getValue() {
-    return this.subjectNameComboBox.getSelectedItem();
+    return this.schemaTypeComboBox.getSelectedItem();
   }
 
   @Override
@@ -217,7 +211,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     @Override
     public void focusGained(FocusEvent e) {
       String subjects = JMeterContextService.getContext().getProperties().getProperty(JSON_SCHEMA_NAMES);
-      subjectNameComboBox.setModel(new DefaultComboBoxModel<>(subjects.split(",")));
+      schemaTypeComboBox.setModel(new DefaultComboBoxModel<>(subjects.split(",")));
     }
 
     @Override

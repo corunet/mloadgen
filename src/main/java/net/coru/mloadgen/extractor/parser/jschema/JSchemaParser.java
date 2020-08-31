@@ -58,7 +58,7 @@ public class JSchemaParser implements SchemaParser {
 	}
 
 	private Field buildSimpleField(String fieldName, String textValue) {
-		Field field = null;
+		Field field;
 		switch(textValue) {
 			case "int":
 			case "number": field = NumberField.builder().name(fieldName).build(); break;

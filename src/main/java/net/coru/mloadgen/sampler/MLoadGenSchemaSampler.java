@@ -43,7 +43,7 @@ import org.apache.jmeter.samplers.SampleResult;
 import org.bson.Document;
 import org.slf4j.Logger;
 
-public class MLoadGen extends AbstractJavaSamplerClient {
+public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
   private Logger log;
 
@@ -61,8 +61,6 @@ public class MLoadGen extends AbstractJavaSamplerClient {
     defaultParameters.addArgument(DBNAME, "<dbname>");
     defaultParameters.addArgument(OPERATION, "insert");
     defaultParameters.addArgument(COLLECTION, "<collection>");
-    defaultParameters.addArgument(FILTER, "<filter>");
-    defaultParameters.addArgument(DOCUMENT, "<document>");
     return defaultParameters;
   }
 

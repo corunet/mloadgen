@@ -6,7 +6,19 @@
 
 package net.coru.mloadgen.extractor;
 
-import java.util.function.Consumer;
+import static freemarker.template.utility.Collections12.singletonList;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+import net.coru.mloadgen.extractor.parser.SchemaParser;
+import net.coru.mloadgen.extractor.parser.jschema.JSONSchemaParser;
 import net.coru.mloadgen.extractor.parser.jschema.JSchemaParser;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
@@ -15,20 +27,8 @@ import net.coru.mloadgen.model.json.Field;
 import net.coru.mloadgen.model.json.MapField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Transformer;
-
-
-import static freemarker.template.utility.Collections12.singletonList;
 
 public class SchemaExtractorImpl implements SchemaExtractor {
 
@@ -38,9 +38,16 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   }
 
   @Override
-  public List<Schema> schemaTypesList(File schemaFile) throws IOException {
+  public List<Schema> schemaTypesList(String schemaType, File schemaFile) throws IOException {
     String readLine = readLineByLine(schemaFile.getPath());
-    JSchemaParser parser = new JSchemaParser();
+    SchemaParser parser;
+
+    if ("JSchema".equalsIgnoreCase(schemaType)) {
+      parser = new JSchemaParser();
+    } else {
+      parser = new JSONSchemaParser();
+    }
+
     return singletonList(parser.parse(readLine));
   }
 
