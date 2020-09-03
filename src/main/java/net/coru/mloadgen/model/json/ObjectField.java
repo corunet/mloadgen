@@ -17,7 +17,7 @@ public class ObjectField extends Field{
 
 	@Builder
 	public ObjectField(String name, List<Field> properties) {
-		super(name, "OBJECT");
+		super(name, "object");
 		this.properties = properties;
 	}
 

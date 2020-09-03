@@ -17,6 +17,19 @@ public class StatelessRandomTool {
 
   private final Map<String, Object> context = new HashMap<>();
 
+  public Object generateRandomMap(String fieldType, Integer valueLength, List<String> fieldValuesList, Integer size) {
+
+    List<String> parameterList = new ArrayList<>(fieldValuesList);
+    parameterList.replaceAll(fieldValue ->
+                                     fieldValue.matches("\\$\\{\\w*}") ?
+                                             JMeterContextService.getContext().getVariables().get(fieldValue.substring(2, fieldValue.length() - 1)) :
+                                             fieldValue
+    );
+
+    return RandomTool.generateRandomMap(fieldType, valueLength, parameterList, size);
+
+  }
+
   public Object generateRandom(String fieldName, String fieldType, Integer valueLength, List<String> fieldValuesList) {
     List<String> parameterList = new ArrayList<>(fieldValuesList);
     parameterList.replaceAll(fieldValue ->
@@ -25,9 +38,9 @@ public class StatelessRandomTool {
             fieldValue
     );
 
-    Object value = net.coru.mloadgen.util.RandomTool.generateRandom(fieldType, valueLength, parameterList);
+    Object value = RandomTool.generateRandom(fieldType, valueLength, parameterList);
     if ("seq".equals(fieldType)) {
-      value = net.coru.mloadgen.util.RandomTool.generateSeq(fieldName, fieldType, parameterList, context);
+      value = RandomTool.generateSeq(fieldName, fieldType, parameterList, context);
     }
 
     return value;

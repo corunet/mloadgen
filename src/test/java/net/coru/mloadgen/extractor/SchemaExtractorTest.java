@@ -27,7 +27,6 @@ import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_SCHEMA;
 import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_SIMPLE_ARRAY_SCHEMA;
 import static net.coru.mloadgen.extractor.data.Fixtures.SIMPLE_SCHEMA;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.Arrays.asList;
 
 class SchemaExtractorTest {
 

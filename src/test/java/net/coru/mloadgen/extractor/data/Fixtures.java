@@ -24,8 +24,12 @@ public class Fixtures {
       .build();
 
   public static final List<FieldValueMapping> EXPECTED_SIMPLE_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "STRING"),
-                 new FieldValueMapping("surname", "STRING"));
+          asList(new FieldValueMapping("name", "string"),
+                 new FieldValueMapping("surname", "string"));
+
+  public static final List<FieldValueMapping> DEFINED_SIMPLE_FIELD_VALUE_MAPPING =
+          asList(new FieldValueMapping("name", "string", 0, "name"),
+                 new FieldValueMapping("surname", "string", 0, "surname"));
 
   public static final Schema MEDIUM_SCHEMA =
       Schema
@@ -41,11 +45,18 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "STRING"),
-                 new FieldValueMapping("surname", "STRING"),
-                 new FieldValueMapping("address.street", "STRING"),
-                 new FieldValueMapping("address.number", "NUMBER")
+          asList(new FieldValueMapping("name", "string"),
+                 new FieldValueMapping("surname", "string"),
+                 new FieldValueMapping("address.street", "string"),
+                 new FieldValueMapping("address.number", "number")
                  );
+
+  public static final List<FieldValueMapping> DEFINED_MEDIUM_FIELD_VALUE_MAPPING =
+          asList(new FieldValueMapping("name", "string", 0, "name"),
+                 new FieldValueMapping("surname", "string", 0, "surname"),
+                 new FieldValueMapping("address.street", "string", 0, "address"),
+                 new FieldValueMapping("address.number", "number", 0, "0")
+          );
 
   public static final Schema MEDIUM_ARRAY_SCHEMA =
       Schema
@@ -70,12 +81,21 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "STRING"),
-                 new FieldValueMapping("surname", "STRING"),
-                 new FieldValueMapping("address.street", "STRING"),
-                 new FieldValueMapping("address.number", "NUMBER"),
-                 new FieldValueMapping("contactData[].mobile", "BOOLEAN"),
-                 new FieldValueMapping("contactData[].email", "STRING")
+          asList(new FieldValueMapping("name", "string"),
+                 new FieldValueMapping("surname", "string"),
+                 new FieldValueMapping("address.street", "string"),
+                 new FieldValueMapping("address.number", "number"),
+                 new FieldValueMapping("contactData[].mobile", "boolean"),
+                 new FieldValueMapping("contactData[].email", "string")
+          );
+
+  public static final List<FieldValueMapping> DEFINED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING =
+          asList(new FieldValueMapping("name", "string", 0, "name"),
+                 new FieldValueMapping("surname", "string", 0, "surname"),
+                 new FieldValueMapping("address.street", "string", 0, "street"),
+                 new FieldValueMapping("address.number", "number", 0, "0"),
+                 new FieldValueMapping("contactData[].mobile", "boolean", 0, "true"),
+                 new FieldValueMapping("contactData[].email", "string", 0, "email")
           );
 
   public static final Schema MEDIUM_SIMPLE_ARRAY_SCHEMA =
@@ -97,11 +117,19 @@ public class Fixtures {
                   .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "STRING"),
-                 new FieldValueMapping("surname", "STRING"),
-                 new FieldValueMapping("address.street", "STRING"),
-                 new FieldValueMapping("address.number", "NUMBER"),
-                 new FieldValueMapping("contactData[]", "STRING-array")
+          asList(new FieldValueMapping("name", "string"),
+                 new FieldValueMapping("surname", "string"),
+                 new FieldValueMapping("address.street", "string"),
+                 new FieldValueMapping("address.number", "number"),
+                 new FieldValueMapping("contactData[]", "string-array")
+          );
+
+  public static final List<FieldValueMapping> DEFINED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING =
+          asList(new FieldValueMapping("name", "string", 0, "name"),
+                 new FieldValueMapping("surname", "string", 0, "surname"),
+                 new FieldValueMapping("address.street", "string", 0, "street"),
+                 new FieldValueMapping("address.number", "number", 0, "0"),
+                 new FieldValueMapping("contactData[1]", "string-array", 0, "contactData")
           );
 
   public static final Schema MEDIUM_ENUM_SCHEMA =
@@ -127,11 +155,19 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "STRING"),
-                 new FieldValueMapping("surname", "STRING"),
-                 new FieldValueMapping("address.street", "STRING"),
-                 new FieldValueMapping("address.number", "NUMBER"),
+          asList(new FieldValueMapping("name", "string"),
+                 new FieldValueMapping("surname", "string"),
+                 new FieldValueMapping("address.street", "string"),
+                 new FieldValueMapping("address.number", "number"),
                  new FieldValueMapping("eye_color", "ENUM")
+          );
+
+  public static final List<FieldValueMapping> DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =
+          asList(new FieldValueMapping("name", "string", 0, "name"),
+                 new FieldValueMapping("surname", "string", 0, "surname"),
+                 new FieldValueMapping("address.street", "string", 0, "street"),
+                 new FieldValueMapping("address.number", "number", 0, "0"),
+                 new FieldValueMapping("eye_color", "ENUM", 0, "BROWN")
           );
 
   public static final Schema MEDIUM_MAP_SCHEMA =
@@ -157,11 +193,20 @@ public class Fixtures {
                   .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_MAP_FIELD_VALUE_MAPPING =
-    asList(new FieldValueMapping("name", "STRING"),
-           new FieldValueMapping("surname", "STRING"),
-           new FieldValueMapping("address.street", "STRING"),
-           new FieldValueMapping("address.number", "NUMBER"),
-           new FieldValueMapping("contactData[][].mobile", "BOOLEAN"),
-           new FieldValueMapping("contactData[][].email", "STRING")
+    asList(new FieldValueMapping("name", "string"),
+           new FieldValueMapping("surname", "string"),
+           new FieldValueMapping("address.street", "string"),
+           new FieldValueMapping("address.number", "number"),
+           new FieldValueMapping("contactData[][].mobile", "boolean"),
+           new FieldValueMapping("contactData[][].email", "string")
+    );
+
+  public static final List<FieldValueMapping> DEFINED_MEDIUM_MAP_FIELD_VALUE_MAPPING =
+    asList(new FieldValueMapping("name", "string", 0, "name"),
+           new FieldValueMapping("surname", "string", 0, "surname"),
+           new FieldValueMapping("address.street", "string", 0, "street"),
+           new FieldValueMapping("address.number", "number", 0, "0"),
+           new FieldValueMapping("contactData[1][].mobile", "boolean", 0, "true"),
+           new FieldValueMapping("contactData[1][].email", "string", 0, "email")
     );
 }

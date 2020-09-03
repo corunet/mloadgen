@@ -17,7 +17,7 @@ public class ArrayField extends Field{
 
 	@Builder
 	public ArrayField(String name, List<Field> value) {
-		super(name, "ARRAY");
+		super(name, "array");
 		this.value = value;
 	}
 

@@ -20,7 +20,7 @@ public class EnumField extends Field {
 
 	@Builder
 	public EnumField(String name, String defaultValue, List<String> enumValues) {
-		super(name, "ENUM");
+		super(name, "enum");
 		this.defaultValue = defaultValue;
 		this.enumValues = enumValues;
 	}

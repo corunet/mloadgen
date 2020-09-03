@@ -17,6 +17,9 @@ import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.QUERY_OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
+import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
+import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
+
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import net.coru.mloadgen.model.FieldValueMapping;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
@@ -60,7 +64,6 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
     defaultParameters.addArgument(MONGODB_PASSWORD, "<password>");
     defaultParameters.addArgument(DBNAME, "<dbname>");
     defaultParameters.addArgument(OPERATION, "insert");
-    defaultParameters.addArgument(COLLECTION, "<collection>");
     return defaultParameters;
   }
 
@@ -84,7 +87,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
       mongoClient = MongoClients.create(settings);
 
-      String collection = context.getParameter(COLLECTION);
+      String collection = context.getJMeterVariables().get(COLLECTION);
       database = mongoClient.getDatabase(dbName);
 
       List<String> colNameList = new ArrayList<>();
@@ -93,6 +96,9 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
         log.error("Collection {} doesn't exist in database", collection);
         throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
       }
+
+      List<FieldValueMapping> schemaProperties = (List<FieldValueMapping>) context.getJMeterVariables().getObject(SCHEMA_PROPERTIES);
+      String jsonSchema = context.getJMeterVariables().get(JSON_SCHEMA);
 
     }
     super.setupTest(context);
@@ -107,7 +113,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
   public SampleResult runTest(JavaSamplerContext context) {
     SampleResult sampleResult = new SampleResult();
     sampleResult.sampleStart();
-    String collection = context.getParameter(COLLECTION);
+    String collection = context.getJMeterVariables().get(COLLECTION);
 
     try {
 
@@ -116,20 +122,11 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
         String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         result = runInsertCommand(collection, document);
-      } else if (QUERY_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String filter = context.getParameter(FILTER);
-        sampleResult.setSamplerData(filter);
-        result = runQueryCommand(collection, filter);
       } else if (UPDATE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
         String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         String filter = context.getParameter(FILTER);
         result = runUpdateCommand(collection, filter, document);
-      } else if (DELETE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION)))
-      {
-        String filter = context.getParameter(FILTER);
-        sampleResult.setSamplerData(filter);
-        result = runDeleteCommand(collection, filter);
       } else {
         throw new IllegalArgumentException("Wrong operation " + context.getParameter(OPERATION));
       }

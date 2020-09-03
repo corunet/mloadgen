@@ -21,6 +21,8 @@ import org.apache.jmeter.threads.JMeterVariables;
 
 import java.util.List;
 
+
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
 import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
 import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
 
@@ -41,6 +43,7 @@ public class FileSerializedConfigElement  extends ConfigTestElement implements T
   public void iterationStart(LoopIterationEvent loopIterationEvent) {
 
     JMeterVariables variables = JMeterContextService.getContext().getVariables();
+    variables.putObject(COLLECTION, jsonCollection);
     variables.putObject(JSON_SCHEMA, jsonSchema);
     variables.putObject(SCHEMA_PROPERTIES, schemaProperties);
   }

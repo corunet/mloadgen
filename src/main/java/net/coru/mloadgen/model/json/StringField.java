@@ -13,6 +13,6 @@ public class StringField extends Field {
 
 	@Builder
 	public StringField(String name) {
-		super(name, "STRING");
+		super(name, "string");
 	}
 }

@@ -1,0 +1,9 @@
+{
+  "name": "name",
+  "surname": "surname",
+  "address": {
+    "street": "street",
+    "number": 0
+  },
+  "contactData": ["contactData"]
+}
