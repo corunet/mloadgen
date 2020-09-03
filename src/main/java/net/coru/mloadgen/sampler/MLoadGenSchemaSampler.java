@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import net.coru.mloadgen.model.FieldValueMapping;
+import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
@@ -54,6 +55,8 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
   private MongoClient mongoClient;
 
   private MongoDatabase database;
+
+  private final JsonSchemaProcessor processor = new JsonSchemaProcessor();
 
   @Override
   public Arguments getDefaultParameters() {
@@ -99,7 +102,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
       List<FieldValueMapping> schemaProperties = (List<FieldValueMapping>) context.getJMeterVariables().getObject(SCHEMA_PROPERTIES);
       String jsonSchema = context.getJMeterVariables().get(JSON_SCHEMA);
-
+      processor.processSchema(schemaProperties);
     }
     super.setupTest(context);
   }
@@ -117,13 +120,12 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
     try {
 
-      String result = null;
+      String document = processor.next();
+      String result;
       if (INSERT_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         result = runInsertCommand(collection, document);
       } else if (UPDATE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         String filter = context.getParameter(FILTER);
         result = runUpdateCommand(collection, filter, document);

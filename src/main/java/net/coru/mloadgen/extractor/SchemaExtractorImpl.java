@@ -28,6 +28,7 @@ import net.coru.mloadgen.model.json.Schema;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 
+import static java.lang.String.join;
 import static java.util.Collections.singletonList;
 
 public class SchemaExtractorImpl implements SchemaExtractor {
@@ -97,7 +98,8 @@ public class SchemaExtractorImpl implements SchemaExtractor {
     } else if (innerField instanceof ArrayField) {
       completeFieldList.addAll(extractArrayInternalFields((ArrayField) innerField));
     } else if (innerField instanceof EnumField) {
-      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType()));
+      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType(), 0,
+              join(",", ((EnumField) innerField).getEnumValues())));
     } else if (innerField instanceof MapField) {
       completeFieldList.addAll(extractMapInternalFields((MapField) innerField));
     } else {
@@ -110,7 +112,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     for (Field value : innerField.getValue()) {
       if (value instanceof ObjectField) {
-        for (Field arrayElementField : (List<Field>) ((ObjectField) value).getProperties()) {
+        for (Field arrayElementField : ((ObjectField) value).getProperties()) {
           CollectionUtils.collect(
             processField(arrayElementField),
             fixName(innerField.getName(), "[]."),
@@ -127,7 +129,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     Field value = innerField.getMapType();
     if (value instanceof ObjectField) {
-      for (Field arrayElementField : (List<Field>) ((ObjectField) value).getProperties()) {
+      for (Field arrayElementField : ((ObjectField) value).getProperties()) {
         CollectionUtils.collect(
                 processField(arrayElementField),
                 fixName(innerField.getName(), "[][]."),

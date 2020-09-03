@@ -7,7 +7,7 @@
   },
   "contactData": [
     {
-      "mobile": "true",
+      "mobile": true,
       "email": "email"
     }
   ]

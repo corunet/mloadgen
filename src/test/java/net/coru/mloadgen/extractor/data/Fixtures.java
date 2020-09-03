@@ -94,7 +94,7 @@ public class Fixtures {
                  new FieldValueMapping("surname", "string", 0, "surname"),
                  new FieldValueMapping("address.street", "string", 0, "street"),
                  new FieldValueMapping("address.number", "number", 0, "0"),
-                 new FieldValueMapping("contactData[].mobile", "boolean", 0, "true"),
+                 new FieldValueMapping("contactData[1].mobile", "boolean", 0, "true"),
                  new FieldValueMapping("contactData[].email", "string", 0, "email")
           );
 
@@ -159,7 +159,7 @@ public class Fixtures {
                  new FieldValueMapping("surname", "string"),
                  new FieldValueMapping("address.street", "string"),
                  new FieldValueMapping("address.number", "number"),
-                 new FieldValueMapping("eye_color", "ENUM")
+                 new FieldValueMapping("eye_color", "enum")
           );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =
@@ -167,7 +167,7 @@ public class Fixtures {
                  new FieldValueMapping("surname", "string", 0, "surname"),
                  new FieldValueMapping("address.street", "string", 0, "street"),
                  new FieldValueMapping("address.number", "number", 0, "0"),
-                 new FieldValueMapping("eye_color", "ENUM", 0, "BROWN")
+                 new FieldValueMapping("eye_color", "enum", 0, "brown")
           );
 
   public static final Schema MEDIUM_MAP_SCHEMA =

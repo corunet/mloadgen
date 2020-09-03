@@ -2,7 +2,7 @@
   "name": "name",
   "surname": "surname",
   "address": {
-    "street": "street",
+    "street": "address",
     "number": 0
   }
 }
