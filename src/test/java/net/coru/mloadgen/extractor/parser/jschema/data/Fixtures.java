@@ -1,6 +1,5 @@
 package net.coru.mloadgen.extractor.parser.jschema.data;
 
-import java.util.Collections;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
 import net.coru.mloadgen.model.json.EnumField;
@@ -17,16 +16,16 @@ public class Fixtures {
   public static final Schema SIMPLE_SCHEMA =
     Schema
       .builder()
-      .field(StringField.builder().name("name").build())
-      .field(StringField.builder().name("surname").build())
+      .property(StringField.builder().name("name").build())
+      .property(StringField.builder().name("surname").build())
       .build();
 
   public static final Schema MEDIUM_SCHEMA =
       Schema
           .builder()
-          .field(StringField.builder().name("name").build())
-          .field(StringField.builder().name("surname").build())
-          .field(ObjectField
+          .property(StringField.builder().name("name").build())
+          .property(StringField.builder().name("surname").build())
+          .property(ObjectField
               .builder()
               .name("address")
               .property(StringField.builder().name("street").build())
@@ -37,15 +36,15 @@ public class Fixtures {
   public static final Schema MEDIUM_ARRAY_SCHEMA =
       Schema
           .builder()
-          .field(StringField.builder().name("name").build())
-          .field(StringField.builder().name("surname").build())
-          .field(ObjectField
+          .property(StringField.builder().name("name").build())
+          .property(StringField.builder().name("surname").build())
+          .property(ObjectField
               .builder()
               .name("address")
               .property(StringField.builder().name("street").build())
               .property(NumberField.builder().name("number").build())
               .build())
-          .field(ArrayField
+          .property(ArrayField
               .builder()
               .name("contactData")
               .value(ObjectField
@@ -59,15 +58,15 @@ public class Fixtures {
   public static final Schema MEDIUM_ENUM_SCHEMA =
       Schema
           .builder()
-          .field(StringField.builder().name("name").build())
-          .field(StringField.builder().name("surname").build())
-          .field(ObjectField
+          .property(StringField.builder().name("name").build())
+          .property(StringField.builder().name("surname").build())
+          .property(ObjectField
               .builder()
               .name("address")
               .property(StringField.builder().name("street").build())
               .property(NumberField.builder().name("number").build())
               .build())
-          .field(ObjectField
+          .property(ObjectField
               .builder()
               .name("eye_color")
               .property(EnumField
@@ -81,15 +80,15 @@ public class Fixtures {
   public static final Schema MEDIUM_MAP_SCHEMA =
           Schema
                   .builder()
-                  .field(StringField.builder().name("name").build())
-                  .field(StringField.builder().name("surname").build())
-                  .field(ObjectField
+                  .property(StringField.builder().name("name").build())
+                  .property(StringField.builder().name("surname").build())
+                  .property(ObjectField
                                  .builder()
                                  .name("address")
                                  .property(StringField.builder().name("street").build())
                                  .property(NumberField.builder().name("number").build())
                                  .build())
-                  .field(MapField
+                  .property(MapField
                                  .builder()
                                  .name("contactData")
                                  .mapType(ObjectField

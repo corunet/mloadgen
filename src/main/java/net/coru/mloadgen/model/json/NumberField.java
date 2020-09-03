@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
-import lombok.experimental.SuperBuilder;
 
 @Value
 @ToString(callSuper = true)
@@ -13,9 +12,15 @@ public class NumberField extends Field {
 
 	String defaultValue;
 
+	Number minimum;
+
+	Number maximum;
+
 	@Builder
-	public NumberField(String name, String defaultValue) {
+	public NumberField(String name, String defaultValue, Number minimum, Number maximum) {
 		super(name, "number");
 		this.defaultValue = defaultValue;
+		this.maximum = maximum;
+		this.minimum = minimum;
 	}
 }

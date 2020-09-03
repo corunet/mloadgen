@@ -34,7 +34,7 @@ public class JSchemaParser implements SchemaParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return Schema.builder().fields(fields).build();
+		return Schema.builder().properties(fields).build();
 	}
 
 	private Field buildProperty(String fieldName, JsonNode jsonNode) {

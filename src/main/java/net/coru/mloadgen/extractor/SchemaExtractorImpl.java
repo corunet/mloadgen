@@ -6,8 +6,6 @@
 
 package net.coru.mloadgen.extractor;
 
-import static freemarker.template.utility.Collections12.singletonList;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +27,8 @@ import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+
+import static java.util.Collections.singletonList;
 
 public class SchemaExtractorImpl implements SchemaExtractor {
 
@@ -66,7 +66,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
   public List<FieldValueMapping> processSchema(Schema schema) {
     List<FieldValueMapping> attributeList = new ArrayList<>();
 
-    schema.getFields().forEach(field -> attributeList.addAll(processField(field)));
+    schema.getProperties().forEach(field -> attributeList.addAll(processField(field)));
     return attributeList;
   }
 

@@ -17,18 +17,35 @@ public class Schema {
 
 	String name;
 
-	List<Field> fields;
+	String type;
+
+	List<Field> properties;
+
+	List<Field> descriptions;
 
 	public static class SchemaBuilder {
-		List<Field> fields = new ArrayList<>();
 
-		public SchemaBuilder field(Field field) {
-			fields.add(field);
+		List<Field> properties = new ArrayList<>();
+
+		List<Field> descriptions = new ArrayList<>();
+
+		public SchemaBuilder property(Field field) {
+			properties.add(field);
 			return this;
 		}
 
-		public SchemaBuilder fields(List<Field> fieldList) {
-			fields.addAll(fieldList);
+		public SchemaBuilder properties(List<Field> fieldList) {
+			properties.addAll(fieldList);
+			return this;
+		}
+
+		public SchemaBuilder description(Field field) {
+			descriptions.add(field);
+			return this;
+		}
+
+		public SchemaBuilder descriptions(List<Field> fieldList) {
+			descriptions.addAll(fieldList);
 			return this;
 		}
 	}
