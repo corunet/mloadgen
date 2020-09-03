@@ -18,28 +18,27 @@ import java.util.ArrayList;
 
 public class FileSerializedConfigElementBeanInfo extends BeanInfoSupport {
 
-  private static final String JSON_COLLECTION = "avroSubject";
+  private static final String JSON_COLLECTION = "jsonCollection";
 
   private static final String SCHEMA_PROPERTIES = "schemaProperties";
 
-  private static final String JSON_SCHEMA = "avroSchema";
+  private static final String JSON_SCHEMA = "jsonSchema";
 
   public FileSerializedConfigElementBeanInfo() {
 
     super(FileSerializedConfigElement.class);
 
     createPropertyGroup("file_serialized_load_generator", new String[]{
-            JSON_COLLECTION, SCHEMA_PROPERTIES, JSON_SCHEMA
+            JSON_COLLECTION, JSON_SCHEMA, SCHEMA_PROPERTIES
     });
 
     PropertyDescriptor subjectNameProps = property(JSON_COLLECTION);
-    subjectNameProps.setPropertyEditorClass(FileSubjectPropertyEditor.class);
     subjectNameProps.setValue(NOT_UNDEFINED, Boolean.TRUE);
-    subjectNameProps.setValue(DEFAULT, "<avro subject>");
+    subjectNameProps.setValue(DEFAULT, "<jsonCollection>");
     subjectNameProps.setValue(NOT_EXPRESSION, Boolean.FALSE);
 
     PropertyDescriptor avroSchemaProps = property(JSON_SCHEMA);
-    avroSchemaProps.setPropertyEditorClass(SchemaConverterPropertyEditor.class);
+    avroSchemaProps.setPropertyEditorClass(FileSubjectPropertyEditor.class);
     avroSchemaProps.setValue(NOT_UNDEFINED, Boolean.TRUE);
     avroSchemaProps.setValue(DEFAULT, "");
     avroSchemaProps.setValue(NOT_EXPRESSION, Boolean.FALSE);

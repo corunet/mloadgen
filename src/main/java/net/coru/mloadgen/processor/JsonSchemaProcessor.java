@@ -25,8 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 
 public class JsonSchemaProcessor {
 
-  private static final Set<String> BASIC_TYPES = SetUtils.hashSet("string", "int", "number", "boolean");
-
   private static ObjectMapper mapper = new ObjectMapper();
 
   private List<FieldValueMapping> fieldExprMappings;

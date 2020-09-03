@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileSystemView;
 import lombok.extern.slf4j.Slf4j;
 import net.coru.mloadgen.extractor.SchemaExtractor;
 import net.coru.mloadgen.extractor.SchemaExtractorImpl;
+import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.util.AutoCompletion;
 import net.coru.mloadgen.util.PropsKeysHelper;
@@ -90,7 +91,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     panel.add(openFileDialogButton, BorderLayout.LINE_END);
     panel.add(schemaTypeComboBox);
     AutoCompletion.enable(schemaTypeComboBox);
-    this.schemaTypeComboBox.addActionListener(this);
+   // this.schemaTypeComboBox.addActionListener(this);
   }
 
   public void actionFileChooser(ActionEvent event) {
@@ -98,14 +99,35 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     int returnValue = fileChooser.showDialog(panel, JMeterUtils.getResString("file_visualizer_open"));
 
     if (JFileChooser.APPROVE_OPTION == returnValue) {
-      File subjectName = Objects.requireNonNull(fileChooser.getSelectedFile());
+      File schemaFile = Objects.requireNonNull(fileChooser.getSelectedFile());
       try {
         String schemaType = schemaTypeComboBox.getSelectedItem().toString();
-        parserSchemaList = schemaExtractor.schemaTypesList(schemaType, subjectName);
-        schemaTypeComboBox.removeAllItems();
-        for (Schema schema : parserSchemaList) {
-          schemaTypeComboBox.addItem(schema.getName());
+        parserSchemaList = schemaExtractor.schemaTypesList(schemaType, schemaFile);
+        List<FieldValueMapping> attributeList = schemaExtractor.flatPropertiesList(parserSchemaList.get(1));
+        //Get current test GUI component
+        TestBeanGUI testBeanGUI = (TestBeanGUI) GuiPackage.getInstance().getCurrentGui();
+        Field customizer = TestBeanGUI.class.getDeclaredField(PropsKeysHelper.CUSTOMIZER);
+        customizer.setAccessible(true);
+
+        //From TestBeanGUI retrieve Bean Customizer as it includes all editors like ClassPropertyEditor, TableEditor
+        GenericTestBeanCustomizer testBeanCustomizer = (GenericTestBeanCustomizer) customizer.get(testBeanGUI);
+        Field editors = GenericTestBeanCustomizer.class.getDeclaredField(PropsKeysHelper.EDITORS);
+        editors.setAccessible(true);
+
+        //Retrieve TableEditor and set all fields with default values to it
+        PropertyEditor[] propertyEditors = (PropertyEditor[]) editors.get(testBeanCustomizer);
+        for (PropertyEditor propertyEditor : propertyEditors) {
+          if (propertyEditor instanceof TableEditor) {
+            propertyEditor.setValue(attributeList);
+          } else if (propertyEditor instanceof SchemaConverterPropertyEditor) {
+            propertyEditor.setValue(parserSchemaList.get(1));
+          }
         }
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        JOptionPane
+                .showMessageDialog(panel, "Failed retrieve schema properties : " + e.getMessage(), "ERROR: Failed to retrieve properties!",
+                        JOptionPane.ERROR_MESSAGE);
+        log.error(e.getMessage(), e);
       } catch (IOException e) {
         JOptionPane.showMessageDialog(panel, "Can't read a file : " + e.getMessage(), "ERROR: Failed to retrieve properties!",
             JOptionPane.ERROR_MESSAGE);
@@ -121,45 +143,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    if (schemaTypeComboBox.getItemCount() != 0) {
 
-      String selectedItem = (String) schemaTypeComboBox.getSelectedItem();
-      Schema selectedSchema = getSelectedSchema(selectedItem);
-
-      if (Objects.nonNull(selectedSchema)) {
-        try {
-          java.util.List<net.coru.mloadgen.model.FieldValueMapping> attributeList = schemaExtractor.flatPropertiesList(selectedSchema);
-          //Get current test GUI component
-          TestBeanGUI testBeanGUI = (TestBeanGUI) GuiPackage.getInstance().getCurrentGui();
-          Field customizer = TestBeanGUI.class.getDeclaredField(PropsKeysHelper.CUSTOMIZER);
-          customizer.setAccessible(true);
-
-          //From TestBeanGUI retrieve Bean Customizer as it includes all editors like ClassPropertyEditor, TableEditor
-          GenericTestBeanCustomizer testBeanCustomizer = (GenericTestBeanCustomizer) customizer.get(testBeanGUI);
-          Field editors = GenericTestBeanCustomizer.class.getDeclaredField(PropsKeysHelper.EDITORS);
-          editors.setAccessible(true);
-
-          //Retrieve TableEditor and set all fields with default values to it
-          PropertyEditor[] propertyEditors = (PropertyEditor[]) editors.get(testBeanCustomizer);
-          for (PropertyEditor propertyEditor : propertyEditors) {
-            if (propertyEditor instanceof TableEditor) {
-              propertyEditor.setValue(attributeList);
-            } else if (propertyEditor instanceof SchemaConverterPropertyEditor) {
-              propertyEditor.setValue(selectedSchema);
-            }
-          }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-          JOptionPane
-              .showMessageDialog(panel, "Failed retrieve schema properties : " + e.getMessage(), "ERROR: Failed to retrieve properties!",
-                  JOptionPane.ERROR_MESSAGE);
-          log.error(e.getMessage(), e);
-        }
-      } else {
-        JOptionPane
-            .showMessageDialog(panel, "No schema has been loaded, we cannot extract properties", "ERROR: Failed to retrieve properties!",
-                JOptionPane.WARNING_MESSAGE);
-      }
-    }
   }
 
   @Override
