@@ -83,9 +83,10 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
 
   private void init() {
     schemaTypeComboBox = new JComboBox<>();
-    schemaTypeComboBox.setEditable(true);
-    schemaTypeComboBox.addItem("JSchema");
-    schemaTypeComboBox.addItem("JSON-Schema");
+    schemaTypeComboBox.setEditable(false);
+    schemaTypeComboBox.insertItemAt("JSchema", 0);
+    schemaTypeComboBox.insertItemAt("JSON-Schema", 1);
+    schemaTypeComboBox.setSelectedIndex(0);
     panel.setLayout(new BorderLayout());
     openFileDialogButton.addActionListener(this::actionFileChooser);
     panel.add(openFileDialogButton, BorderLayout.LINE_END);
@@ -103,7 +104,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
       try {
         String schemaType = schemaTypeComboBox.getSelectedItem().toString();
         parserSchemaList = schemaExtractor.schemaTypesList(schemaType, schemaFile);
-        List<FieldValueMapping> attributeList = schemaExtractor.flatPropertiesList(parserSchemaList.get(1));
+        List<FieldValueMapping> attributeList = schemaExtractor.flatPropertiesList(parserSchemaList.get(0));
         //Get current test GUI component
         TestBeanGUI testBeanGUI = (TestBeanGUI) GuiPackage.getInstance().getCurrentGui();
         Field customizer = TestBeanGUI.class.getDeclaredField(PropsKeysHelper.CUSTOMIZER);
@@ -120,7 +121,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
           if (propertyEditor instanceof TableEditor) {
             propertyEditor.setValue(attributeList);
           } else if (propertyEditor instanceof SchemaConverterPropertyEditor) {
-            propertyEditor.setValue(parserSchemaList.get(1));
+            propertyEditor.setValue(parserSchemaList.get(0));
           }
         }
       } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -133,12 +134,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
             JOptionPane.ERROR_MESSAGE);
         log.error(e.getMessage(), e);
       }
-      schemaTypeComboBox.addFocusListener(new ComboFiller());
     }
-  }
-
-  public Schema getSelectedSchema(String name) {
-    return IterableUtils.find(parserSchemaList, schema -> name.equalsIgnoreCase(schema.getName()));
   }
 
   @Override
@@ -167,20 +163,6 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
   }
 
   @Override
-  public void setAsText(String text) throws IllegalArgumentException {
-    this.schemaTypeComboBox.setSelectedItem(text);
-  }
-
-  @Override
-  public void setValue(Object value) {
-      if (value != null) {
-        this.schemaTypeComboBox.setSelectedItem(value);
-      } else {
-        this.schemaTypeComboBox.setSelectedItem("");
-      }
-  }
-
-  @Override
   public Object getValue() {
     return this.schemaTypeComboBox.getSelectedItem();
   }
@@ -188,20 +170,6 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
   @Override
   public boolean supportsCustomEditor() {
     return true;
-  }
-
-  class ComboFiller implements FocusListener {
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      String subjects = JMeterContextService.getContext().getProperties().getProperty(JSON_SCHEMA_NAMES);
-      schemaTypeComboBox.setModel(new DefaultComboBoxModel<>(subjects.split(",")));
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-      // Override but not used. Implementation not needed.
-    }
   }
 
 }
