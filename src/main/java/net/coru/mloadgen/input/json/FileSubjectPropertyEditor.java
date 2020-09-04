@@ -10,8 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -34,19 +31,13 @@ import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.util.AutoCompletion;
 import net.coru.mloadgen.util.PropsKeysHelper;
-import org.apache.commons.collections4.IterableUtils;
 import org.apache.jmeter.gui.ClearGui;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.testbeans.gui.GenericTestBeanCustomizer;
 import org.apache.jmeter.testbeans.gui.TableEditor;
 import org.apache.jmeter.testbeans.gui.TestBeanGUI;
 import org.apache.jmeter.testbeans.gui.TestBeanPropertyEditor;
-import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.util.JMeterUtils;
-
-
-import static net.coru.mloadgen.util.JsonSchemaKeyHelper.JSON_SCHEMA_NAMES;
-
 
 @Slf4j
 public class FileSubjectPropertyEditor extends PropertyEditorSupport implements ActionListener, TestBeanPropertyEditor, ClearGui {
@@ -88,15 +79,14 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
     schemaTypeComboBox.insertItemAt("JSON-Schema", 1);
     schemaTypeComboBox.setSelectedIndex(0);
     panel.setLayout(new BorderLayout());
-    openFileDialogButton.addActionListener(this::actionFileChooser);
+    openFileDialogButton.addActionListener(this);
     panel.add(openFileDialogButton, BorderLayout.LINE_END);
     panel.add(schemaTypeComboBox);
     AutoCompletion.enable(schemaTypeComboBox);
-   // this.schemaTypeComboBox.addActionListener(this);
   }
 
-  public void actionFileChooser(ActionEvent event) {
-
+  @Override
+  public void actionPerformed(ActionEvent event) {
     int returnValue = fileChooser.showDialog(panel, JMeterUtils.getResString("file_visualizer_open"));
 
     if (JFileChooser.APPROVE_OPTION == returnValue) {
@@ -135,11 +125,6 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
         log.error(e.getMessage(), e);
       }
     }
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent event) {
-
   }
 
   @Override
