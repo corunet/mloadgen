@@ -24,4 +24,5 @@ public class EnumField extends Field {
 		this.defaultValue = defaultValue;
 		this.enumValues = enumValues;
 	}
+
 }

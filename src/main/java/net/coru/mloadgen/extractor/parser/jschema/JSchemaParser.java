@@ -12,6 +12,7 @@ import net.coru.mloadgen.model.json.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 public class JSchemaParser implements SchemaParser {
+
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Override

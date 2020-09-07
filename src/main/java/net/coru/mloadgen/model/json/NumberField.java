@@ -16,11 +16,21 @@ public class NumberField extends Field {
 
 	Number maximum;
 
+	Number exclusiveMinimum;
+
+	Number exclusiveMaximum;
+
+	Number multipleOf;
+
 	@Builder
-	public NumberField(String name, String defaultValue, Number minimum, Number maximum) {
+	public NumberField(String name, String defaultValue, Number minimum, Number maximum, Number exclusiveMinimum,
+			Number exclusiveMaximum, Number multipleOf) {
 		super(name, "number");
 		this.defaultValue = defaultValue;
 		this.maximum = maximum;
 		this.minimum = minimum;
+		this.exclusiveMinimum = exclusiveMinimum;
+		this.exclusiveMaximum = exclusiveMaximum;
+		this.multipleOf = multipleOf;
 	}
 }

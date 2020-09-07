@@ -12,9 +12,10 @@ public class DateField extends Field {
 
 	String format;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public DateField(String name, String format) {
 		super(name, "timestamp");
 		this.format = format;
 	}
+
 }

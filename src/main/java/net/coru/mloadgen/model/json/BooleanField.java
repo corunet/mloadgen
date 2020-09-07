@@ -14,4 +14,5 @@ public class BooleanField extends Field {
 	public BooleanField(String name) {
 		super(name, "boolean");
 	}
+
 }
