@@ -10,9 +10,13 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class BooleanField extends Field {
 
-	@Builder
+	@Builder(toBuilder = true)
 	public BooleanField(String name) {
 		super(name, "boolean");
 	}
 
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
+	}
 }

@@ -22,7 +22,7 @@ public class NumberField extends Field {
 
 	Number multipleOf;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public NumberField(String name, String defaultValue, Number minimum, Number maximum, Number exclusiveMinimum,
 			Number exclusiveMaximum, Number multipleOf) {
 		super(name, "number");
@@ -32,5 +32,10 @@ public class NumberField extends Field {
 		this.exclusiveMinimum = exclusiveMinimum;
 		this.exclusiveMaximum = exclusiveMaximum;
 		this.multipleOf = multipleOf;
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 }

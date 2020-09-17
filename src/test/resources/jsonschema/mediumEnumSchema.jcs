@@ -1,9 +1,0 @@
-{
-  "name": "string",
-  "surname": "string",
-  "address": {
-    "street": "string",
-    "number": "number"
-  },
-  "eye_color" : { "enum" : ["brown", "blue", "green"]}
-}

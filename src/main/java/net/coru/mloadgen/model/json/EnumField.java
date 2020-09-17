@@ -18,11 +18,15 @@ public class EnumField extends Field {
 	@Singular
 	List<String> enumValues;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public EnumField(String name, String defaultValue, List<String> enumValues) {
 		super(name, "enum");
 		this.defaultValue = defaultValue;
 		this.enumValues = enumValues;
 	}
 
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
+	}
 }

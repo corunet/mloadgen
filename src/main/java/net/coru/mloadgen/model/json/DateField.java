@@ -18,4 +18,9 @@ public class DateField extends Field {
 		this.format = format;
 	}
 
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
+	}
+
 }

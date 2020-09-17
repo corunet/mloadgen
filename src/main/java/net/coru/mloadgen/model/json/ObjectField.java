@@ -17,11 +17,16 @@ public class ObjectField extends Field{
 
 	List<String> required;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public ObjectField(String name, List<Field> properties, List<String> required) {
 		super(name, "object");
 		this.properties = properties;
 		this.required = required;
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 
 	public static class ObjectFieldBuilder {

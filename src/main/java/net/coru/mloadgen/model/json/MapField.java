@@ -12,9 +12,14 @@ public class MapField extends Field{
 
 	Field mapType;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public MapField(String name, Field mapType) {
 		super(name, "map");
 		this.mapType = mapType;
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 }

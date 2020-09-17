@@ -11,8 +11,13 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class StringField extends Field {
 
-	@Builder
+	@Builder(toBuilder = true)
 	public StringField(String name) {
 		super(name, "string");
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 }

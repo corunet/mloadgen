@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import net.coru.mloadgen.extractor.parser.util.ResourceAsFile;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.Schema;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -54,11 +53,11 @@ class SchemaExtractorTest {
 
   private static Stream<Arguments> parametersForSchemaTypesList() throws URISyntaxException {
     return Stream.of(
-        Arguments.of("JSchema", resourceAsFile.getFile("/jsonschema/simpleSchema.jcs"), singletonList(SIMPLE_SCHEMA)),
-        Arguments.of("JSchema", resourceAsFile.getFile("/jsonschema/mediumSchema.jcs"), singletonList(MEDIUM_SCHEMA)),
-        Arguments.of("JSchema", resourceAsFile.getFile("/jsonschema/mediumArraySchema.jcs"), singletonList(MEDIUM_ARRAY_SCHEMA)),
-        Arguments.of("JSchema", resourceAsFile.getFile("/jsonschema/mediumEnumSchema.jcs"), singletonList(MEDIUM_ENUM_SCHEMA)),
-        Arguments.of("JSchema", resourceAsFile.getFile("/jsonschema/mediumMapSchema.jcs"), singletonList(MEDIUM_MAP_SCHEMA))
+        Arguments.of("JSchema", resourceAsFile.getFile("/jschema/simpleSchema.jcs"), singletonList(SIMPLE_SCHEMA)),
+        Arguments.of("JSchema", resourceAsFile.getFile("/jschema/mediumSchema.jcs"), singletonList(MEDIUM_SCHEMA)),
+        Arguments.of("JSchema", resourceAsFile.getFile("/jschema/mediumArraySchema.jcs"), singletonList(MEDIUM_ARRAY_SCHEMA)),
+        Arguments.of("JSchema", resourceAsFile.getFile("/jschema/mediumEnumSchema.jcs"), singletonList(MEDIUM_ENUM_SCHEMA)),
+        Arguments.of("JSchema", resourceAsFile.getFile("/jschema/mediumMapSchema.jcs"), singletonList(MEDIUM_MAP_SCHEMA))
     );
   }
 

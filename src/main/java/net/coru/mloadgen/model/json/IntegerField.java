@@ -16,11 +16,16 @@ public class IntegerField extends Field {
 
 	int maximum;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public IntegerField(String name, String defaultValue, int minimum, int maximum) {
 		super(name, "number");
 		this.defaultValue = defaultValue;
 		this.maximum = maximum;
 		this.minimum = minimum;
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 }

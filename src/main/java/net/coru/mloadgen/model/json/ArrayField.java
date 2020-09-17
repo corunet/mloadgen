@@ -12,18 +12,23 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class ArrayField extends Field{
 
-	List<Field> value;
+	List<Field> values;
 
 	int minItems;
 
 	boolean uniqueItems;
 
 	@Builder(toBuilder = true)
-	public ArrayField(String name, List<Field> value, int minItems, boolean uniqueItems) {
+	public ArrayField(String name, List<Field> values, int minItems, boolean uniqueItems) {
 		super(name, "array");
-		this.value = value;
+		this.values = values;
 		this.minItems = minItems;
 		this.uniqueItems = uniqueItems;
+	}
+
+	@Override
+	public Field cloneField(String fieldName) {
+		return this.toBuilder().name(fieldName).build();
 	}
 
 	public static class ArrayFieldBuilder {

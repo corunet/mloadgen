@@ -110,7 +110,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
 
   private List<FieldValueMapping> extractArrayInternalFields(ArrayField innerField) {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
-    for (Field value : innerField.getValue()) {
+    for (Field value : innerField.getValues()) {
       if (value instanceof ObjectField) {
         for (Field arrayElementField : ((ObjectField) value).getProperties()) {
           CollectionUtils.collect(

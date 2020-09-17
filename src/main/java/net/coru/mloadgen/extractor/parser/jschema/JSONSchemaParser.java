@@ -25,12 +25,13 @@ public class JSONSchemaParser implements SchemaParser {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  private Map<String, Field> definitionsMap = new HashMap<>();
+  private final Map<String, Field> definitionsMap = new HashMap<>();
 
   @Override
   public Schema parse(String jsonSchema) {
+    definitionsMap.clear();
     List<Field> fields = new ArrayList<>();
-
+    Schema schema = null;
     try {
       JsonNode jsonNode = mapper.readTree(jsonSchema);
 
@@ -38,18 +39,26 @@ public class JSONSchemaParser implements SchemaParser {
       definitionsMap.putAll(processDefinitions(definitions));
 
       JsonNode schemaId = jsonNode.path("$id");
-      JsonNode schema = jsonNode.path("$schema");
+      JsonNode schemaName = jsonNode.path("$schema");
       JsonNode requiredList = jsonNode.path("required");
       JsonNode type = jsonNode.path("type");
 
-      CollectionUtils.collect(jsonNode.fieldNames(),
-          fieldName -> buildProperty(fieldName, jsonNode.get(fieldName)),
+      CollectionUtils.collect(jsonNode.path("properties").fieldNames(),
+          fieldName -> buildProperty(fieldName, jsonNode.path("properties").get(fieldName)),
           fields);
+      schema = Schema.builder()
+              .id(schemaId.asText())
+              .name(schemaName.asText())
+              .requiredFields(requiredList.asText().split(","))
+              .type(type.asText())
+              .properties(fields)
+              .descriptions(definitionsMap.values())
+              .build();
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    return Schema.builder().properties(fields).build();
+    return schema;
   }
 
   private Map<String, Field> processDefinitions(JsonNode definitions) {
@@ -66,7 +75,7 @@ public class JSONSchemaParser implements SchemaParser {
     if (Objects.nonNull(jsonNode.findValue("$ref"))) {
       String reference = jsonNode.findValue("$ref").asText();
       if (!reference.isEmpty() && reference.startsWith("#")) {
-        result = definitionsMap.get(reference.substring(reference.lastIndexOf("/"))).cloneField(fieldName);
+        result = definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(fieldName);
       } else {
         throw new MLoadGenException(String.format("Reference not Supported: %s", reference));
       }
@@ -127,7 +136,7 @@ public class JSONSchemaParser implements SchemaParser {
     return ArrayField
         .builder()
         .name(fieldName)
-        .value(buildProperty("", jsonNode))
+        .value(buildProperty("", jsonNode.path("items")))
         .minItems(Integer.parseInt(minItems))
         .uniqueItems(Boolean.parseBoolean(uniqueItems))
         .build();
