@@ -8,7 +8,7 @@ Mloadgen is a Mongo Document injector for MongoDB. It let you insert documents i
 
 ---
 
-MLoadGen had only a component which is a Java Request Sampler. It let you configure the connection to a mongo server define the collection and the document you wanto insert in.
+MLoadGen had only a component which is a Java Request Sampler. It let you configure the connection to a mongo server define the collection and the document you want to insert in.
 
 ### Setup
 
@@ -50,6 +50,9 @@ For windows and mac and you can:
 ```
 
 Once build is completed, copy target/mloadgen-&gtversion>.jar file to JMETER_HOME/lib/ext directory. You also need to replace the mongo library version shipped with JMeter to at least the same defined in the pom.xml. Nowadays Jmeter version 5.2 use the version 2.11.3, which is quite old for this plugin and if you try to connect the modern mongo cluster.
+
+Other change is being required to get it work, is to replace the Mongo Java Driver for anyone higher than version 3.1.0. Driver can be found in <JMETER HOME>/lib/
+The latest available, and tested, when this Readme was wrote was the 3.12.7 you can found it [here](https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.12.7/mongo-java-driver-3.12.7.jar)
 
 ### MLoadGenSampler
 
