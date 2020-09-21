@@ -13,6 +13,7 @@ import java.util.Objects;
 import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.model.json.ArrayField;
+import net.coru.mloadgen.model.json.BooleanField;
 import net.coru.mloadgen.model.json.Field;
 import net.coru.mloadgen.model.json.IntegerField;
 import net.coru.mloadgen.model.json.NumberField;
@@ -20,6 +21,7 @@ import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class JSONSchemaParser implements SchemaParser {
 
@@ -75,7 +77,11 @@ public class JSONSchemaParser implements SchemaParser {
     if (Objects.nonNull(jsonNode.findValue("$ref"))) {
       String reference = jsonNode.findValue("$ref").asText();
       if (!reference.isEmpty() && reference.startsWith("#")) {
-        result = definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(fieldName);
+        if ("array".equalsIgnoreCase(jsonNode.findPath("type").textValue())) {
+          result = buildArrayField(fieldName, jsonNode, definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(null));
+        } else {
+          result = definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(fieldName);
+        }
       } else {
         throw new MLoadGenException(String.format("Reference not Supported: %s", reference));
       }
@@ -93,6 +99,9 @@ public class JSONSchemaParser implements SchemaParser {
           break;
         case "object":
           result = buildObjectField(fieldName, jsonNode);
+          break;
+        case "boolean":
+          result = buildBooleanField(fieldName);
           break;
         default:
           result = StringField.builder().name(fieldName).build();
@@ -131,12 +140,16 @@ public class JSONSchemaParser implements SchemaParser {
   }
 
   private Field buildArrayField(String fieldName, JsonNode jsonNode) {
+    return buildArrayField(fieldName, jsonNode, buildProperty(null, jsonNode.path("items")));
+  }
+
+  private Field buildArrayField(String fieldName, JsonNode jsonNode, Field value) {
     String minItems = jsonNode.path("minItems").asText("0");
     String uniqueItems = jsonNode.path("uniqueItems").asText("false");
     return ArrayField
         .builder()
         .name(fieldName)
-        .value(buildProperty("", jsonNode.path("items")))
+        .value(value)
         .minItems(Integer.parseInt(minItems))
         .uniqueItems(Boolean.parseBoolean(uniqueItems))
         .build();
@@ -146,7 +159,11 @@ public class JSONSchemaParser implements SchemaParser {
     List<Field> properties = new ArrayList<>();
     CollectionUtils.collect(jsonNode.path("properties").fields(), field -> buildProperty(field.getKey(), field.getValue()), properties);
     List<String> strRequired = jsonNode.findValuesAsText("required");
+    CollectionUtils.filter(strRequired, StringUtils::isNotEmpty);
     return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
   }
 
+  private Field buildBooleanField(String fieldName) {
+    return BooleanField.builder().name(fieldName).build();
+  }
 }

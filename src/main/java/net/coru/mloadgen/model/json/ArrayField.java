@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
 import lombok.ToString;
+import lombok.Value;
 
 @Value
 @ToString(callSuper = true)
@@ -33,15 +33,15 @@ public class ArrayField extends Field{
 
 	public static class ArrayFieldBuilder {
 
-		private List<Field> value = new ArrayList<>();
+		private List<Field> values = new ArrayList<>();
 
 		public ArrayFieldBuilder values(List<Field> values) {
-			value.addAll(values);
+			this.values.addAll(values);
 			return this;
 		}
 
 		public ArrayFieldBuilder value(Field value) {
-			this.value.add(value);
+			this.values.add(value);
 			return this;
 		}
 	}

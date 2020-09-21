@@ -53,11 +53,18 @@ public class JsonSchemaFixtures {
                 .property(ArrayField.builder().name("fruits").value(StringField.builder().build()).build())
                 .property(ArrayField
                       .builder()
+                      .name("vegetables")
                       .value(ObjectField
                              .builder()
                              .property(StringField.builder().name("veggieName").build())
                              .property(BooleanField.builder().name("veggieLike").build())
                              .build())
                       .build())
+                .description(ObjectField
+                    .builder()
+                    .name("veggie")
+                    .property(StringField.builder().name("veggieName").build())
+                    .property(BooleanField.builder().name("veggieLike").build())
+                    .build())
                 .build();
 }

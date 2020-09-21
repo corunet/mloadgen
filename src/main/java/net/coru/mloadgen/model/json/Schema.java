@@ -1,17 +1,16 @@
 package net.coru.mloadgen.model.json;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-
-import static java.util.Arrays.asList;
-
-@Data
+@Value
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -27,13 +26,13 @@ public class Schema {
 
 	List<Field> properties;
 
-	List<Field> descriptions;
+	List<Field> definitions;
 
 	public static class SchemaBuilder {
 
 		List<Field> properties = new ArrayList<>();
 
-		List<Field> descriptions = new ArrayList<>();
+		List<Field> definitions = new ArrayList<>();
 
 		List<String> requireFields = new ArrayList<>();
 
@@ -48,17 +47,17 @@ public class Schema {
 		}
 
 		public SchemaBuilder description(Field field) {
-			descriptions.add(field);
+			definitions.add(field);
 			return this;
 		}
 
 		public SchemaBuilder descriptions(List<Field> fieldList) {
-			descriptions.addAll(fieldList);
+			definitions.addAll(fieldList);
 			return this;
 		}
 
 		public SchemaBuilder descriptions(Collection<Field> fieldList) {
-			descriptions.addAll(fieldList);
+			definitions.addAll(fieldList);
 			return this;
 		}
 
@@ -77,4 +76,5 @@ public class Schema {
 			return this;
 		}
 	}
+
 }
