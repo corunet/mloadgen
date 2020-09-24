@@ -38,7 +38,7 @@ public class JSONSchemaParser implements SchemaParser {
       JsonNode jsonNode = mapper.readTree(jsonSchema);
 
       JsonNode definitions = jsonNode.path("definitions");
-      definitionsMap.putAll(processDefinitions(definitions));
+      processDefinitions(definitions);
 
       JsonNode schemaId = jsonNode.path("$id");
       JsonNode schemaName = jsonNode.path("$schema");
@@ -57,19 +57,17 @@ public class JSONSchemaParser implements SchemaParser {
               .descriptions(definitionsMap.values())
               .build();
     } catch (IOException e) {
-      e.printStackTrace();
+      new MLoadGenException(e);
     }
 
     return schema;
   }
 
-  private Map<String, Field> processDefinitions(JsonNode definitions) {
-    Map<String, Field> definitionsMap = new HashMap<>();
+  private void processDefinitions(JsonNode definitions) {
     for (Iterator<Entry<String, JsonNode>> it = definitions.fields(); it.hasNext(); ) {
       Entry<String, JsonNode> definitionNode = it.next();
       definitionsMap.put(definitionNode.getKey(), buildProperty(definitionNode.getKey(), definitionNode.getValue()));
     }
-    return definitionsMap;
   }
 
   private Field buildProperty(String fieldName, JsonNode jsonNode) {
