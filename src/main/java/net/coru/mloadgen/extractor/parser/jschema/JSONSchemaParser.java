@@ -21,6 +21,8 @@ import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class JSONSchemaParser implements SchemaParser {
@@ -33,7 +35,7 @@ public class JSONSchemaParser implements SchemaParser {
   public Schema parse(String jsonSchema) {
     definitionsMap.clear();
     List<Field> fields = new ArrayList<>();
-    Schema schema = null;
+    Schema schema;
     try {
       JsonNode jsonNode = mapper.readTree(jsonSchema);
 
@@ -57,35 +59,75 @@ public class JSONSchemaParser implements SchemaParser {
               .descriptions(definitionsMap.values())
               .build();
     } catch (IOException e) {
-      new MLoadGenException(e);
+      throw new MLoadGenException("Wrong Json Schema", e);
     }
 
     return schema;
   }
 
   private void processDefinitions(JsonNode definitions) {
+    Iterator<JsonNode> refNodeIterator = definitions.findValues("$ref").listIterator();
+    while(refNodeIterator.hasNext()) {
+      JsonNode refNode = refNodeIterator.next();
+      String referenceName = extractRefName(refNode);
+      JsonNode refResolveNode = definitions.findValue(referenceName);
+      if (!isRefNode(refResolveNode)) {
+        definitionsMap.put(referenceName, buildProperty(referenceName, refResolveNode));
+        refNodeIterator.remove();
+      }
+    }
+
+
+
     for (Iterator<Entry<String, JsonNode>> it = definitions.fields(); it.hasNext(); ) {
       Entry<String, JsonNode> definitionNode = it.next();
-      definitionsMap.put(definitionNode.getKey(), buildProperty(definitionNode.getKey(), definitionNode.getValue()));
+      if (!isRefNode(definitionNode.getValue())) {
+        definitionsMap.putIfAbsent(definitionNode.getKey(), buildProperty(definitionNode.getKey(), definitionNode.getValue()));
+      } else if (isRefNodeSupported(definitionNode.getValue())) {
+        String referenceName = extractRefName(definitionNode.getValue());
+        if (definitionsMap.containsKey(referenceName)) {
+          definitionsMap.put(definitionNode.getKey(), buildProperty(definitionNode.getKey(), definitionNode.getValue()));
+        } else {
+          if (!isRefNode(definitions.path(referenceName))) {
+            definitionsMap.put(definitionNode.getKey(), buildProperty(definitionNode.getKey(), definitions.path(referenceName)));
+          } else {
+            throw new MLoadGenException("Wrong Json Schema, Missing definition");
+          }
+        }
+      }
     }
+  }
+
+  private boolean isRefNodeSupported(JsonNode jsonNode) {
+    String reference = jsonNode.findValue("$ref").asText();
+    return !reference.isEmpty() && reference.startsWith("#");
+  }
+
+  private boolean isRefNode(JsonNode jsonNode) {
+    return Objects.nonNull(jsonNode.findValue("$ref"));
+  }
+
+  private String extractRefName(JsonNode jsonNode) {
+    String reference = jsonNode.findValue("$ref").asText();
+    return reference.substring(reference.lastIndexOf("/") + 1);
   }
 
   private Field buildProperty(String fieldName, JsonNode jsonNode) {
     Field result;
-    if (Objects.nonNull(jsonNode.findValue("$ref"))) {
-      String reference = jsonNode.findValue("$ref").asText();
-      if (!reference.isEmpty() && reference.startsWith("#")) {
+    if (isRefNode(jsonNode)) {
+      if (isRefNodeSupported(jsonNode)) {
+        String referenceName = extractRefName(jsonNode);
         if ("array".equalsIgnoreCase(jsonNode.findPath("type").textValue())) {
-          result = buildArrayField(fieldName, jsonNode, definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(null));
+          result = buildArrayField(fieldName, jsonNode, definitionsMap.get(referenceName).cloneField(null));
         } else {
-          result = definitionsMap.get(reference.substring(reference.lastIndexOf("/") + 1)).cloneField(fieldName);
+          result = definitionsMap.get(referenceName).cloneField(fieldName);
         }
       } else {
-        throw new MLoadGenException(String.format("Reference not Supported: %s", reference));
+        throw new MLoadGenException(String.format("Reference not Supported: %s", extractRefName(jsonNode)));
       }
     } else {
-      // TODO support for anyOf, allOf, oneOf
-      switch (jsonNode.findPath("type").textValue().toLowerCase()) {
+      String nodeType = jsonNode.findPath("type").textValue().toLowerCase();
+      switch (nodeType) {
         case "integer":
           result = IntegerField.builder().name(fieldName).build();
           break;
@@ -101,12 +143,33 @@ public class JSONSchemaParser implements SchemaParser {
         case "boolean":
           result = buildBooleanField(fieldName);
           break;
+        case "anyOf":
+        case "allOf":
+        case "oneOf":
+          result = chooseAnyOf(fieldName, jsonNode, nodeType);
+          break;
         default:
           result = StringField.builder().name(fieldName).build();
           break;
       }
     }
     return result;
+  }
+
+  private Field chooseAnyOf(String fieldName, JsonNode jsonNode, String type) {
+    List<String> options = IteratorUtils.toList(jsonNode.get(type).fieldNames());
+    int optionsNumber = options.size();
+    Field resultObject;
+    switch (type) {
+      case "anyOf":
+      case "oneOf":
+        resultObject = buildObjectField(fieldName, jsonNode.path(type).get(RandomUtils.nextInt(0, optionsNumber)));
+      break;
+      default:
+        resultObject = buildObjectField(fieldName, jsonNode.path(type));
+        break;
+    }
+    return resultObject;
   }
 
   private Field buildNumberField(String fieldName, JsonNode jsonNode) {

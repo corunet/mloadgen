@@ -20,8 +20,10 @@ import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCommandException;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.MongoSecurityException;
 import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
@@ -89,11 +91,16 @@ public class MLoadGenPlainSampler extends AbstractJavaSamplerClient {
       String collection = context.getParameter(COLLECTION);
       database = mongoClient.getDatabase(dbName);
 
-      List<String> colNameList = new ArrayList<>();
-      database.listCollectionNames().into(colNameList);
-      if (!colNameList.contains(collection)) {
-        log.error("Collection {} doesn't exist in database", collection);
-        throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+      try {
+        List<String> colNameList = new ArrayList<>();
+        database.listCollectionNames().into(colNameList);
+
+        if (!colNameList.contains(collection)) {
+          log.error("Collection {} doesn't exist in database", collection);
+          throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+        }
+      } catch (MongoCommandException | MongoSecurityException ex) {
+        log.warn("No permission to check if collection exists. Continuing operation");
       }
 
     }

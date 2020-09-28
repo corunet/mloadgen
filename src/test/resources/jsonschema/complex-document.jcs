@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Page",
+  "description": "Entity that stores the layout and contents of a frontend conceptual page",
+  "type": "object",
+  "properties": {
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "criteria": { "type": ["object", "null"] },
+          "priority":  { "type": "integer" },
+          "content":  {
+            "type": "object",
+            "properties": {
+              "layout": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/genericSlice"
+                    },
+                    "default": []
+                  },
+                  "styles":  {
+                    "$ref": "#/definitions/genericLayoutStyles"
+                  },
+                  "internalType":  { "type": "string" },
+                  "type":  { "type": "string" }
+                },
+                "required": [
+                  "id",
+                  "children",
+                  "styles",
+                  "internalType",
+                  "type"
+                ]
+              }
+            },
+            "required": [
+              "layout"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "criteria",
+          "priority",
+          "content"
+        ]
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "segments"
+  ],
+  "definitions": {
+    "genericSlice": {
+      "type": "object",
+      "properties": {
+        "id":  { "type": "string" },
+        "name":  { "type": "string" },
+        "internalType":  { "type": "string" },
+        "type":  { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/genericComponent"
+          },
+          "default": []
+        },
+        "styles":  { "$ref": "#/definitions/genericStyles" }
+      },
+      "required": [
+        "id",
+        "name",
+        "internalType",
+        "type",
+        "children",
+        "styles"
+      ]
+    },
+    "genericLayoutStyles": {
+      "type": "object",
+      "properties": {
+        "backgroundColor":  { "type": ["string", "null"] }
+      },
+      "required": []
+    },
+    "genericStyles": {
+      "type": "object",
+      "properties": {
+        "backgroundColor":  { "type": ["string", "null"] },
+        "marginTop": { "$ref": "#/definitions/inputUnit" },
+        "marginLeft": { "$ref": "#/definitions/inputUnit" },
+        "marginBottom": { "$ref": "#/definitions/inputUnit" },
+        "marginRight": { "$ref": "#/definitions/inputUnit" },
+        "paddingTop": { "$ref": "#/definitions/inputUnit" },
+        "paddingLeft": { "$ref": "#/definitions/inputUnit" },
+        "paddingBottom": { "$ref": "#/definitions/inputUnit" },
+        "paddingRight": { "$ref": "#/definitions/inputUnit" }
+      },
+      "required": []
+    },
+    "inputUnit": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "integer" },
+        { "type": "null" }
+      ]
+    },
+    "genericComponent": {
+      "anyOf": [
+        { "$ref": "#/definitions/genericSlice" },
+        { "$ref": "#/definitions/genericWidget" }
+      ]
+    },
+    "genericWidget": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "internalType": { "type": "string" },
+        "metadata": { "type": ["object", "null"] },
+        "buttons": {
+          "type": [ "array", "null" ],
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "layout": { "$ref": "#/definitions/genericWidgetLayout" }
+      },
+      "required": [
+        "id",
+        "name",
+        "internalType",
+        "type"
+      ]
+    },
+    "genericWidgetLayout": {
+      "type": "object",
+      "properties": {
+        "justifyContent": { "type": ["string", "null"] },
+        "alignItems": { "type": ["string", "null"] },
+        "alignContent": { "type": ["string", "null"] },
+        "flexDirection": { "type": ["string", "null"] },
+        "alignSelf": { "type": ["string", "null"] },
+        "flexGrow": { "type": ["integer", "null"] },
+        "flexShrink": { "type": ["integer", "null"] },
+        "flexBasis": { "type": ["string", "null"] }
+      },
+      "required": []
+    }
+  }
+}

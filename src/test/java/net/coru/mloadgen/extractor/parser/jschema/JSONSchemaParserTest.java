@@ -21,9 +21,10 @@ class JSONSchemaParserTest {
 
   private static Stream<Arguments> parametersForShouldParseJSONSchemaDocument() throws Exception {
     return Stream.of(
-            Arguments.of(resourceAsFile.getContent("/jsonschema/basic.jcs"), SIMPLE_SCHEMA),
-            Arguments.of(resourceAsFile.getContent("/jsonschema/basic-number.jcs"), SIMPLE_SCHEMA_NUMBER),
-            Arguments.of(resourceAsFile.getContent("/jsonschema/basic-array.jcs"), SIMPLE_SCHEMA_ARRAY)
+       /* Arguments.of(resourceAsFile.getContent("/jsonschema/basic.jcs"), SIMPLE_SCHEMA),
+        Arguments.of(resourceAsFile.getContent("/jsonschema/basic-number.jcs"), SIMPLE_SCHEMA_NUMBER),
+        Arguments.of(resourceAsFile.getContent("/jsonschema/basic-array.jcs"), SIMPLE_SCHEMA_ARRAY),
+       */ Arguments.of(resourceAsFile.getContent("/jsonschema/complex-document.jcs"), SIMPLE_SCHEMA_ARRAY)
     );
   }
 

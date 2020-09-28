@@ -23,8 +23,10 @@ import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCommandException;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.MongoSecurityException;
 import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;
@@ -93,11 +96,16 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
       String collection = context.getJMeterVariables().get(COLLECTION);
       database = mongoClient.getDatabase(dbName);
 
-      List<String> colNameList = new ArrayList<>();
-      database.listCollectionNames().into(colNameList);
-      if (!colNameList.contains(collection)) {
-        log.error("Collection {} doesn't exist in database", collection);
-        throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+      try {
+        List<String> colNameList = new ArrayList<>();
+        database.listCollectionNames().into(colNameList);
+
+        if (!colNameList.contains(collection)) {
+          log.error("Collection {} doesn't exist in database", collection);
+          throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+        }
+      } catch (MongoCommandException | MongoSecurityException ex) {
+        log.warn("No permission to check if collection exists. Continuing operation");
       }
 
       List<FieldValueMapping> schemaProperties = (List<FieldValueMapping>) context.getJMeterVariables().getObject(SCHEMA_PROPERTIES);
