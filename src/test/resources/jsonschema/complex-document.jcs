@@ -11,8 +11,8 @@
         "properties": {
           "id": { "type": "string" },
           "criteria": { "type": ["object", "null"] },
-          "priority":  { "type": "integer" },
-          "content":  {
+          "priority": { "type": "integer" },
+          "content": {
             "type": "object",
             "properties": {
               "layout": {
