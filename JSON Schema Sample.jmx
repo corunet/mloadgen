@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <net.coru.mloadgen.config.fileserialized.FileSerializedConfigElement guiclass="TestBeanGUI" testclass="net.coru.mloadgen.config.fileserialized.FileSerializedConfigElement" testname="JSON Schema File Load Generator Config" enabled="true">
+          <stringProp name="jsonCollection">veggies</stringProp>
+          <stringProp name="jsonSchema">JSchema</stringProp>
+          <collectionProp name="schemaProperties">
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">$id</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">$schema</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">description</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">properties.fruits.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">properties.fruits.items.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">properties.vegetables.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">properties.vegetables.items.$ref</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">definitions.veggie.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">definitions.veggie.properties.veggieName.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">definitions.veggie.properties.veggieName.description</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">definitions.veggie.properties.veggieLike.type</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">boolean</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="net.coru.mloadgen.model.FieldValueMapping">
+              <stringProp name="fieldName">definitions.veggie.properties.veggieLike.description</stringProp>
+              <intProp name="valueLength">0</intProp>
+              <stringProp name="fieldType">string</stringProp>
+            </elementProp>
+          </collectionProp>
+        </net.coru.mloadgen.config.fileserialized.FileSerializedConfigElement>
+        <hashTree/>
+        <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="Java Request" enabled="true">
+          <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="hostname" elementType="Argument">
+                <stringProp name="Argument.name">hostname</stringProp>
+                <stringProp name="Argument.value">localhost</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="port" elementType="Argument">
+                <stringProp name="Argument.name">port</stringProp>
+                <stringProp name="Argument.value">27017</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="username" elementType="Argument">
+                <stringProp name="Argument.name">username</stringProp>
+                <stringProp name="Argument.value">admin</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="password" elementType="Argument">
+                <stringProp name="Argument.name">password</stringProp>
+                <stringProp name="Argument.value">4dm1n</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="dbname" elementType="Argument">
+                <stringProp name="Argument.name">dbname</stringProp>
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="operation" elementType="Argument">
+                <stringProp name="Argument.name">operation</stringProp>
+                <stringProp name="Argument.value">insert</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="classname">net.coru.mloadgen.sampler.MLoadGenSchemaSampler</stringProp>
+        </JavaSampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

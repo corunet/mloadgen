@@ -116,22 +116,22 @@ public class JSONSchemaParser implements SchemaParser {
           result = buildBooleanField(fieldName);
           break;
         default:
-          result = StringField.builder().name(fieldName).build();
+          result = buildStringField(fieldName, jsonNode);
           break;
       }
     } else if (isRefNode(jsonNode)) {
-        String referenceName = extractRefName(jsonNode);
-        if (definitionsMap.containsKey(referenceName)) {
-          result = definitionsMap.get(referenceName);
-        } else {
-          if (cyclingSet.add(referenceName)) {
-            result = extractDefinition(referenceName, definitions);
-            cyclingSet.remove(referenceName);
-          } else {
-            result = null;
-          }
-        }
+      String referenceName = extractRefName(jsonNode);
+      if (definitionsMap.containsKey(referenceName)) {
+        result = definitionsMap.get(referenceName);
       } else {
+        if (cyclingSet.add(referenceName)) {
+          result = extractDefinition(referenceName, definitions);
+          cyclingSet.remove(referenceName);
+        } else {
+          result = null;
+        }
+      }
+    } else if (isCombine(jsonNode)) {
       if (Objects.nonNull(jsonNode.get("anyOf"))) {
         result = chooseAnyOfDefinition(fieldName, jsonNode, "anyOf", definitions);
       } else if (Objects.nonNull(jsonNode.get("allOf"))) {
@@ -139,8 +139,16 @@ public class JSONSchemaParser implements SchemaParser {
       } else {
         result = chooseAnyOfDefinition(fieldName, jsonNode, "oneOf", definitions);
       }
+    } else {
+      result = buildDefinitionObjectField(fieldName, jsonNode, definitions);
     }
     return result;
+  }
+
+  private boolean isCombine(JsonNode jsonNode) {
+    return Objects.nonNull(jsonNode.get("anyOf")) ||
+            Objects.nonNull(jsonNode.get("allOf")) ||
+            Objects.nonNull(jsonNode.get("oneOf"));
   }
 
   private String getSafeType(JsonNode jsonNode) {
@@ -197,7 +205,8 @@ public class JSONSchemaParser implements SchemaParser {
   private Field buildDefinitionObjectField(String fieldName, JsonNode jsonNode, JsonNode definitions) {
     List<Field> properties = new ArrayList<>();
     if (Objects.nonNull(jsonNode.get("properties"))) {
-      CollectionUtils.collect(jsonNode.path("properties").fields(), field -> buildDefinition(field.getKey(), field.getValue(), definitions), properties);
+      CollectionUtils.collect(jsonNode.path("properties").fields(),
+                              field -> buildDefinition(field.getKey(), field.getValue(), definitions), properties);
       List<String> strRequired = jsonNode.findValuesAsText("required");
       CollectionUtils.filter(strRequired, StringUtils::isNotEmpty);
       return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
@@ -211,7 +220,10 @@ public class JSONSchemaParser implements SchemaParser {
         return null;
       }
     } else {
-      return ObjectField.builder().build();
+      List<Field> fieldList = new ArrayList<>();
+      jsonNode.fields()
+              .forEachRemaining(property -> fieldList.add(buildProperty(property.getKey(), property.getValue())));
+      return ObjectField.builder().properties(fieldList).build();
     }
   }
 
@@ -270,11 +282,11 @@ public class JSONSchemaParser implements SchemaParser {
       }
     } else {
       if (Objects.nonNull(jsonNode.get("anyOf"))) {
-        result = buildArrayField(fieldName, chooseAnyOf(fieldName, jsonNode, "anyOf"));
+        result = chooseAnyOf(fieldName, jsonNode, "anyOf");
       } else if (Objects.nonNull(jsonNode.get("allOf"))) {
-        result = buildArrayField(fieldName, chooseAnyOf(fieldName, jsonNode, "allOf"));
+        result = chooseAnyOf(fieldName, jsonNode, "allOf");
       } else {
-        result = buildArrayField(fieldName, chooseAnyOf(fieldName, jsonNode, "oneOf"));
+        result = chooseAnyOf(fieldName, jsonNode, "oneOf");
       }
     }
     return result;
@@ -382,10 +394,22 @@ public class JSONSchemaParser implements SchemaParser {
 
   private Field buildObjectField(String fieldName, JsonNode jsonNode) {
     List<Field> properties = new ArrayList<>();
-    CollectionUtils.collect(jsonNode.path("properties").fields(), field -> buildProperty(field.getKey(), field.getValue()), properties);
     List<String> strRequired = jsonNode.findValuesAsText("required");
     CollectionUtils.filter(strRequired, StringUtils::isNotEmpty);
-    return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
+    if (!isCombine(jsonNode)) {
+      CollectionUtils.collect(jsonNode.path("properties").fields(), field -> buildProperty(field.getKey(), field.getValue()), properties);
+      return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
+    } else {
+      Field result;
+      if (Objects.nonNull(jsonNode.get("anyOf"))) {
+        result = chooseAnyOf(fieldName, jsonNode, "anyOf");
+      } else if (Objects.nonNull(jsonNode.get("allOf"))) {
+        result = chooseAnyOf(fieldName, jsonNode, "allOf");
+      } else {
+        result = chooseAnyOf(fieldName, jsonNode, "oneOf");
+      }
+      return result;
+    }
   }
 
   private Field buildBooleanField(String fieldName) {
