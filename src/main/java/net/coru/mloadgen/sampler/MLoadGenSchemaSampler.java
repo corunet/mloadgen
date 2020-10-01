@@ -6,8 +6,6 @@ package net.coru.mloadgen.sampler;
 
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DBNAME;
-import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DELETE_OPERATION;
-import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DOCUMENT;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.FILTER;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.INSERT_OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_HOSTNAME;
@@ -15,11 +13,9 @@ import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PASSWORD;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PORT;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
-import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.QUERY_OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
 import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
 import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
-
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
@@ -41,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import lombok.extern.slf4j.Slf4j;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;

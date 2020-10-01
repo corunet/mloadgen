@@ -1,0 +1,2013 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "OrderPublicDetailDocument",
+  "type": "object",
+  "description": "Contains information about items and their shipping, status, payments...",
+  "properties": {
+    "_class": {
+      "type": "string",
+      "description": "Non-functional attribute. Java class associated.",
+      "enum": [
+        "OrderPublicDetailDocument"
+      ]
+    },
+    "_entity": {
+      "type": "string",
+      "description": "Non-functional attribute. Identifies the entity described by the document.",
+      "enum": [
+        "OrderPublicDetailDocument"
+      ]
+    },
+    "_metadata": {
+      "type": "object",
+      "description": "Non-functional attribute. Metadata associated with the document (audit data).",
+      "properties": {
+        "createdAt": {
+          "type": "number",
+          "description": "Datetime on which the document is created. (UTC)",
+          "minimum": 0,
+          "unit": "Timestamp"
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "User that creates the document."
+        },
+        "deletedAt": {
+          "type": "number",
+          "description": "Datetime on which the document was deleted. (UTC)",
+          "minimum": 0,
+          "unit": "Timestamp"
+        },
+        "deletedBy": {
+          "type": "string",
+          "description": "User that deleted the document."
+        },
+        "lastUpdatedAt": {
+          "type": "number",
+          "description": "Datetime on which the last update was performed. (UTC)",
+          "minimum": 0,
+          "unit": "Timestamp"
+        },
+        "lastUpdatedBy": {
+          "type": "string",
+          "description": "User that performed the last update to the document."
+        },
+        "projectName": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "projectVersion": {
+          "type": "string",
+          "description": "Project version"
+        },
+        "schema": {
+          "type": "number",
+          "description": ""
+        }
+      },
+      "required": [
+        "createdAt",
+        "createdBy",
+        "lastUpdatedAt",
+        "lastUpdatedBy"
+      ],
+      "additionalProperties": false
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Public identifier of the order",
+      "default": "",
+      "examples": [
+        "f3a57b4f-7a59-4f52-9c82-180028115aa5"
+      ],
+      "pattern": "^(.*)$",
+      "x-metadata": {
+        "binding": {
+          "entity": "Cliente",
+          "attribute": "numeroPedidoOnline",
+          "version": "1.0.0"
+        },
+        "sensitivity": "RESTRINGIDA"
+      }
+    },
+    "storeId": {
+      "type": "integer",
+      "description": "Virtual store where the order was placed",
+      "default": 0,
+      "examples": [
+        123456
+      ]
+    },
+    "paymentId": {
+      "type": "string",
+      "description": "Generated transaction in the payments system, if any",
+      "default": "",
+      "examples": [
+        "1db24a06"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "parentId": {
+      "type": "string",
+      "description": "In a exchange or replacement order, the origin orderId",
+      "default": "",
+      "examples": [
+        "00f505de2c74"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "externalId": {
+      "type": "string",
+      "description": "In a order from an external origin (Tmall, instagram...), the id witch the origin system refers to order",
+      "default": "",
+      "examples": [
+        "2f40dc7e17c8"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "editorId": {
+      "type": "integer",
+      "description": "Identifier of the agent who is editing the order",
+      "default": 0,
+      "examples": [
+        123456
+      ]
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of the order that indicates if the order is a normal order or an exchange/replacement",
+      "enum": [
+        "REGULAR",
+        "REPLACEMENT",
+        "EXCHANGE",
+        "REPOSITION",
+        "ONLINE_EXCHANGE",
+        "STORE_EXCHANGE"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "General status of the order",
+      "enum": [
+        "RECEIVED",
+        "VALIDATED",
+        "PREPARING",
+        "SHIPPED",
+        "CLOSED",
+        "CANCELLED"
+      ]
+    },
+    "fraudStatus": {
+      "type": "string",
+      "description": "Status of fraud review process",
+      "enum": [
+        "NOT_APPLIED",
+        "PENDING",
+        "ACCEPTED",
+        "REQUIRED_REVIEW",
+        "REJECTED"
+      ]
+    },
+    "stockStatus": {
+      "type": "string",
+      "description": "Status of stock system",
+      "enum": [
+        "UNKNOWN",
+        "NOT_APPLIED",
+        "SYNCHRONIZED",
+        "SKIPPED"
+      ]
+    },
+    "paymentStatus": {
+      "type": "string",
+      "description": "Status of the order payment",
+      "enum": [
+        "NOT_APPLIED",
+        "UNKNOWN",
+        "REJECTED",
+        "ACCEPTED"
+      ]
+    },
+    "paymentSystem": {
+      "type": "string",
+      "description": "System that has managed the payment of the order",
+      "enum": [
+        "UNKNOWN",
+        "ALPHA",
+        "WCS"
+      ]
+    },
+    "manualReviewStatus": {
+      "type": "string",
+      "description": "Status of manual review for the order",
+      "enum": [
+        "NA",
+        "PENDING",
+        "ACCEPTED",
+        "REFUSED"
+      ]
+    },
+    "customerId": {
+      "type": "integer",
+      "description": "Customer that placed the order",
+      "default": 0,
+      "examples": [
+        123444
+      ]
+    },
+    "customerType": {
+      "type": "string",
+      "description": "Indicates if the customer is registered or guest",
+      "enum": [
+        "REGISTERED",
+        "GUEST"
+      ]
+    },
+    "guestAction": {
+      "type": "string",
+      "description": "Indicates if the guest client who made the order performed any action with their account at the end of the order (CONVERSION / LINK ACCOUNT)",
+      "enum": [
+        "NO_ACTION",
+        "CONVERSION",
+        "LINK_ACCOUNT"
+      ]
+    },
+    "locale": {
+      "type": "string",
+      "description": "Language in which the customer has placed the order",
+      "default": "",
+      "examples": [
+        "es_ES"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "preorder": {
+      "type": "boolean",
+      "description": "Is the order a preorder?",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "fastSint": {
+      "type": "boolean",
+      "description": "Indicates if the order has been processed in fastSINT mode",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "pvpTaxesIncluded": {
+      "type": "boolean",
+      "description": "Does the order must be shown with taxes included?",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "placedDatetime": {
+      "type": "string",
+      "description": "The moment the order was placed (UTC)",
+      "default": "",
+      "examples": [
+        "2019-12-03T10:15:30Z"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "cancelledDatetime": {
+      "type": "string",
+      "description": "The moment the order was cancelled (if it was cancelled) (UTC)",
+      "default": "",
+      "examples": [
+        "2019-12-04T10:15:30Z"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "lastUpdateDatetime": {
+      "type": "string",
+      "description": "The moment the order had its last update (UTC)",
+      "examples": [
+        "2019-12-03T10:15:30Z"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "snapshotDatetime": {
+      "type": "string",
+      "description": "The moment the order was placed (UTC)",
+      "examples": [
+        "2019-12-03T10:15:30Z"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "snapshotTrigger": {
+      "type": "string",
+      "description": "Name of the event that triggered the snapshot",
+      "enum": [
+        "ORDER_CREATED",
+        "REPAYMENT_DONE",
+        "REPAYMENT_NEEDED",
+        "PAYMENT_CONFIRMED",
+        "PAYMENT_UPDATED",
+        "PAYMENT_SYNC",
+        "PAYMENT_CLOSED",
+        "FRAUD_VALIDATED",
+        "FRAUD_TO_REVIEW",
+        "IN_MANUAL_REVIEW",
+        "IN_WAREHOUSE",
+        "STOCKOUT",
+        "IN_EDITION",
+        "FORWARD_ORDER",
+        "BILLING_ADDRESS_UPDATED",
+        "SHIPPING_ADDRESS_UPDATED",
+        "ORDER_CANCELLED",
+        "BILLING_UPDATED",
+        "BILLING_THREAD",
+        "EXPEDITION",
+        "ORDER_TRACKING",
+        "ON_DEMAND",
+        "SIMPA",
+        "DELIVERY_INFO_UPDATED",
+        "DISTRIBUTION_UPDATED",
+        "ORDER_PARTIALLY_CANCELLED",
+        "CUSTOMER_UPDATED",
+        "CHECKOUT_COMPLETED"
+      ]
+    },
+    "duty": {
+      "type": "object",
+      "description": "Info about the amounts of duty for the order",
+      "properties": {
+        "amount": {
+          "type": "object",
+          "description": "Customs duty amount",
+          "required": [
+            "value",
+            "currency",
+            "exponent"
+          ],
+          "properties": {
+            "value": {
+              "type": "integer",
+              "description": "Value of the amount in currency's minor units",
+              "default": 0,
+              "examples": [
+                1000
+              ]
+            },
+            "currency": {
+              "type": "string",
+              "description": "Currency code of the amount according ISO 4217",
+              "default": "",
+              "examples": [
+                "EUR"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "exponent": {
+              "type": "integer",
+              "description": "Indicates the 10 exponent of the amount.",
+              "default": 0,
+              "examples": [
+                2
+              ]
+            }
+          }
+        },
+        "confirmedAmount": {
+          "type": "object",
+          "description": "Customs confirmed duty amount",
+          "required": [
+            "value",
+            "currency",
+            "exponent"
+          ],
+          "properties": {
+            "value": {
+              "type": "integer",
+              "description": "Value of the amount in currency's minor units",
+              "default": 0,
+              "examples": [
+                900
+              ]
+            },
+            "currency": {
+              "type": "string",
+              "description": "Currency code of the amount according ISO 4217",
+              "default": "",
+              "examples": [
+                "EUR"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "exponent": {
+              "type": "integer",
+              "description": "Indicates the 10 exponent of the amount.",
+              "default": 0,
+              "examples": [
+                2
+              ]
+            }
+          }
+        }
+      }
+    },
+    "billing": {
+      "type": "object",
+      "description": "Info about the billing of the order",
+      "required": [
+        "status",
+        "addressId"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Status of the order billing",
+          "enum": [
+            "NOT_APPLIED",
+            "PENDING",
+            "BILLED"
+          ]
+        },
+        "addressId": {
+          "type": "string",
+          "description": "Billing address",
+          "default": "",
+          "examples": [
+            "44138f25"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "origin": {
+      "type": "object",
+      "description": "Info about the billing of the order",
+      "required": [
+        "systemType"
+      ],
+      "properties": {
+        "systemCode": {
+          "type": "string",
+          "description": "Code of the system that places the order",
+          "default": "",
+          "examples": [
+            "a_systemCode"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "systemType": {
+          "type": "string",
+          "description": "System that places the order (Checkout, MPS, BO, STORE)",
+          "enum": [
+            "CHECKOUT",
+            "MPS",
+            "BACKOFFICE",
+            "STORE"
+          ]
+        },
+        "systemUser": {
+          "type": "string",
+          "description": "Identifier of the user who creates the order (Store Employee / BO User)",
+          "default": "",
+          "examples": [
+            "1db24a06"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "systemDeviceId": {
+          "type": "string",
+          "description": "Identifier of the serial number of the device from which the checkout was made (only for store)",
+          "default": "",
+          "examples": [
+            "1db24a06"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "deviceType": {
+          "type": "string",
+          "description": "Device (browser, mobile, iphone ...)",
+          "default": "",
+          "examples": [
+            "mobile"
+          ],
+          "pattern": "^(.*)$",
+          "x-metadata": {
+            "binding": {
+              "entity": "Cliente",
+              "attribute": "dispositivo",
+              "version": "1.0.0"
+            },
+            "sensitivity": "RESTRINGIDA"
+          }
+        },
+        "deviceUserAgent": {
+          "type": "string",
+          "description": "Contains information about web browser name, operating system, device type and lots of other information.",
+          "default": "",
+          "examples": [
+            "ZaraApp/8.15.3 (iPhone; iOS 13.5.1) (compatible; Zara/App/v8.15.3)"
+          ],
+          "pattern": "^(.*)$",
+          "x-metadata": {
+            "binding": {
+              "entity": "Cliente",
+              "attribute": "navegador",
+              "version": "1.0.0"
+            },
+            "sensitivity": "RESTRINGIDA"
+          }
+        }
+      }
+    },
+    "orderItems": {
+      "type": "array",
+      "description": "List of items included in the order",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "pvpAmount",
+          "promotions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Public identifier of the item",
+            "default": "",
+            "examples": [
+              "d011c1f751bf"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "partNumber": {
+            "type": "string",
+            "description": "Identifier of the product that represent the item",
+            "default": "",
+            "examples": [
+              "1814229826d1"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "type": {
+            "type": "string",
+            "description": "Indicates if the item is a product, gift card or shipping costs",
+            "enum": [
+              "PRODUCT",
+              "VIRTUAL_GIFT_CARD",
+              "PHYSICAL_GIFT_CARD",
+              "SHIPPING_COST",
+              "SERVICE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the item",
+            "enum": [
+              "RECEIVED",
+              "PREPARING",
+              "SHIPPED",
+              "CLOSED",
+              "CANCELLED"
+            ]
+          },
+          "subStatus": {
+            "type": "string",
+            "description": "SubStatus of the item",
+            "enum": [
+              "RECEIVED",
+              "SENT_FFC",
+              "IN_FFC",
+              "STOCKOUT",
+              "RESERVED_INTO_STOCKOUT",
+              "UNDER_REVIEW",
+              "NEW",
+              "EXPEDITED",
+              "IN_COURIER",
+              "IN_STORE",
+              "IN_DROPPOINT",
+              "DELIVERY_ATTEMPTED",
+              "DELIVERED_TO_CUSTOMER",
+              "DELIVERED_IN_DROPPOINT",
+              "REJECTED",
+              "DELIVERY_OMISSION",
+              "MISSED",
+              "EXPIRED",
+              "CANCELLED"
+            ]
+          },
+          "statusReason": {
+            "type": "string",
+            "description": "Reason why the item is in that state",
+            "default": "",
+            "pattern": "^(.*)$"
+          },
+          "statusDatetime": {
+            "type": "string",
+            "description": "Date when item was in this status (UTC)",
+            "default": "",
+            "examples": [
+              "2019-11-06T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "pvpAmount": {
+            "type": "object",
+            "description": "Price of the item with shown to the customer",
+            "required": [
+              "value",
+              "currency",
+              "exponent"
+            ],
+            "properties": {
+              "value": {
+                "type": "integer",
+                "description": "Value of the amount in currency's minor units",
+                "default": 0,
+                "examples": [
+                  400
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency code of the amount according ISO 4217",
+                "default": "",
+                "examples": [
+                  "EUR"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "exponent": {
+                "type": "integer",
+                "description": "Indicates the 10 exponent of the amount.",
+                "default": 0,
+                "examples": [
+                  2
+                ]
+              }
+            }
+          },
+          "taxesAmount": {
+            "type": "object",
+            "description": "Taxes of the item",
+            "required": [
+              "value",
+              "currency",
+              "exponent"
+            ],
+            "properties": {
+              "value": {
+                "type": "integer",
+                "description": "Value of the amount in currency's minor units",
+                "default": 0,
+                "examples": [
+                  600
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency code of the amount according ISO 4217",
+                "examples": [
+                  "EUR"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "exponent": {
+                "type": "integer",
+                "description": "Indicates the 10 exponent of the amount.",
+                "default": 0,
+                "examples": [
+                  2
+                ]
+              }
+            }
+          },
+          "taxesPercentage": {
+            "type": "number",
+            "description": "Taxes percentage that apply to the item",
+            "default": 0.0,
+            "examples": [
+              10.4
+            ]
+          },
+          "initialMinimumDate": {
+            "type": "string",
+            "description": "Date when the order will arrive as minimum (UTC)",
+            "default": "",
+            "examples": [
+              "2019-11-06T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "initialMaximumDate": {
+            "type": "string",
+            "description": "Date when the order will arrive as maximum (UTC)",
+            "default": "",
+            "examples": [
+              "2019-11-06T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "adjustment": {
+            "type": "object",
+            "description": "Total amount of applied adjustments",
+            "properties": {
+              "value": {
+                "type": "integer",
+                "description": "Value of the amount in currency's minor units",
+                "default": 0,
+                "examples": [
+                  400
+                ]
+              },
+              "currency": {
+                "type": "string",
+                "description": "Identifier of the currency used in all amounts of the order",
+                "default": "",
+                "examples": [
+                  "EUR"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "exponent": {
+                "type": "integer",
+                "description": "Number of decimal places that applies to all amounts in the order. It is given by the store",
+                "default": 0,
+                "examples": [
+                  2
+                ]
+              }
+            }
+          },
+          "product": {
+            "type": "object",
+            "description": "Set of info relative to the item with type 'product'",
+            "required": [
+              "catalogEntryId",
+              "stockMode"
+            ],
+            "properties": {
+              "catalogEntryId": {
+                "type": "integer",
+                "description": "Identifier of the product",
+                "default": 0,
+                "examples": [
+                  1234
+                ]
+              },
+              "stockMode": {
+                "type": "string",
+                "description": "Indicates if the product exists as stock or is a preorder",
+                "enum": [
+                  "UNKNOWN",
+                  "NORMAL",
+                  "TRANSIT_PRESALE",
+                  "VIRTUALSTOCK_PRESALE",
+                  "SOD_PRESALE",
+                  "PREORDER"
+                ]
+              },
+              "xmedia": {
+                "type": "array",
+                "description": "Set of info about media elements associated to the product",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "xmediaSet": {
+                      "type": "integer",
+                      "description": "A product may have more than one shooting session. Each session is a different set",
+                      "default": 0,
+                      "examples": [
+                        6
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Type of media: image, video, etc. Used to determine the file format and extension",
+                      "default": "",
+                      "examples": [
+                        "a_type"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "description": "Kind of image: plain, full, etc",
+                      "default": "",
+                      "examples": [
+                        "a_kind"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Path over the static content URL where the media is located.",
+                      "default": "",
+                      "examples": [
+                        "a_path"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file. Is used to generate the url to the media.",
+                      "default": "",
+                      "examples": [
+                        "a_name"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "width": {
+                      "type": "integer",
+                      "description": "Max width of the media in full quality.",
+                      "default": 0,
+                      "examples": [
+                        10
+                      ]
+                    },
+                    "height": {
+                      "type": "integer",
+                      "description": "Max height of the media in full quality.",
+                      "default": 0,
+                      "examples": [
+                        20
+                      ]
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "description": "Timestamp that indicates when the image was changed last time. It is used to generate the media URL and bypass cache every time it changes.",
+                      "default": "",
+                      "examples": [
+                        "2019-12-06T10:15:30Z"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "allowedScreens": {
+                      "type": "array",
+                      "description": "Screen sizes suitable for this media: small, large.",
+                      "items": {
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                          "an_allowedScreen",
+                          "another_allowedScreen"
+                        ],
+                        "pattern": "^(.*)$"
+                      }
+                    },
+                    "locations": {
+                      "type": "array",
+                      "description": "Locations selected to use this media on.",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "order"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the location: CATEGORY_PAGE, PRODUCT_PAGE, SHOPCART_PAGE, MINI_SHOPCART, RELATED_PRODUCT, BUNDLE_COMPONENT, etc.",
+                            "default": "",
+                            "examples": [
+                              "location_name"
+                            ],
+                            "pattern": "^(.*)$"
+                          },
+                          "order": {
+                            "type": "integer",
+                            "description": "Indicates the precedence of medias for an specific location.",
+                            "default": 0,
+                            "examples": [
+                              12
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "customizations": {
+                "type": "array",
+                "description": "List of customizations applied to the product",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Customer selection. Right now, only RTF is allowed",
+                      "default": "",
+                      "examples": [
+                        "a_type"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Customer selection",
+                      "default": "",
+                      "examples": [
+                        "a_text"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "typography": {
+                      "type": "string",
+                      "description": "Customer selection",
+                      "default": "",
+                      "examples": [
+                        "a_typography"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "color": {
+                      "type": "string",
+                      "description": "Customer selection",
+                      "default": "",
+                      "examples": [
+                        "a_color"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "area": {
+                      "type": "string",
+                      "description": "Customer selection",
+                      "default": "",
+                      "examples": [
+                        "a_area"
+                      ],
+                      "pattern": "^(.*)$"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "virtualGiftCard": {
+            "type": "object",
+            "description": "Set of info relative to the item with type 'virtual gift card'",
+            "required": [
+              "catalogEntryId"
+            ],
+            "properties": {
+              "catalogEntryId": {
+                "type": "integer",
+                "description": "Identifier of the product",
+                "default": 0,
+                "examples": [
+                  234561
+                ]
+              },
+              "style": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_style"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "message": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_message"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "senderName": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_senderName"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "nombre",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              },
+              "receiverName": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_receiverName"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "nombreTitularTarjetaRegalo",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              },
+              "deliveryDate": {
+                "type": "string",
+                "description": "Expected delivery date in the case of a virtual gift card (UTC)",
+                "default": "",
+                "examples": [
+                  "2019-11-06T10:15:30Z"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "physicalGiftCard": {
+            "type": "object",
+            "description": "Set of info relative to the item with type 'physical gift card'",
+            "required": [
+              "catalogEntryId"
+            ],
+            "properties": {
+              "catalogEntryId": {
+                "type": "integer",
+                "description": "Identifier of the product",
+                "default": 0,
+                "examples": [
+                  234561
+                ]
+              },
+              "senderName": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_senderName"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "nombre",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              },
+              "message": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_message"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "receiverPhonePrefix": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_receiverPhonePrefix"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "telefono",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              },
+              "receiverPhoneNumber": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_receiverPhoneNumber"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "telefono",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              }
+            }
+          },
+          "origin": {
+            "type": "object",
+            "description": "Set of info about where the customer found the product to finally acquire it",
+            "properties": {
+              "parentId": {
+                "type": "string",
+                "description": "Stylism or colour bundle from where the item was added to the order",
+                "default": "",
+                "examples": [
+                  "a_parentId"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "promotions": {
+            "type": "array",
+            "description": "List of promotions associated to the item",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Identifier of the promotion",
+                  "default": "",
+                  "examples": [
+                    "a_id"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "type of promotion",
+                  "enum": [
+                    "GENERIC",
+                    "EMPLOYEE_DISCOUNT",
+                    "AFFINITY_DISCOUNT"
+                  ]
+                },
+                "amount": {
+                  "type": "object",
+                  "description": "Amount that applies the promotion for the item",
+                  "required": [
+                    "value",
+                    "currency",
+                    "exponent"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "integer",
+                      "description": "Value of the amount in currency's minor units",
+                      "default": 0,
+                      "examples": [
+                        100
+                      ]
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code of the amount according ISO 4217",
+                      "default": "",
+                      "examples": [
+                        "EUR"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "exponent": {
+                      "type": "integer",
+                      "description": "Indicates the 10 exponent of the amount.",
+                      "default": 0,
+                      "examples": [
+                        2
+                      ]
+                    }
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "description": "promotion name",
+                  "default": "",
+                  "examples": [
+                    "a_promotionName"
+                  ],
+                  "pattern": "^(.*)$"
+                }
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "description": "Relations of this item with others",
+            "required": [
+              "orderItemId",
+              "name"
+            ],
+            "properties": {
+              "orderItemId": {
+                "type": "string",
+                "description": "Item Id related to this item",
+                "default": "",
+                "examples": [
+                  "a_parentId"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the relation",
+                "default": "",
+                "examples": [
+                  "a_parentId"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "taxes": {
+            "type": "array",
+            "description": "List of taxes applied to the item",
+            "items": {
+              "type": "object",
+              "required": [
+                "amount"
+              ],
+              "properties": {
+                "code":{
+                  "type": "string",
+                  "description": "External TAX identifier",
+                  "default": "",
+                  "examples": [
+                    "804001"
+                  ]
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Tax name",
+                  "default": "",
+                  "examples": [
+                    "ПДВ",
+                    "IVA"
+                  ]
+                },
+                "rate": {
+                  "type": "number",
+                  "description": "Taxes rate that apply to the item",
+                  "default": 0.0,
+                  "examples": [
+                    10.4
+                  ]
+                },
+                "basis": {
+                  "type": "object",
+                  "description": "Amount that applies the promotion for the item",
+                  "required": [
+                    "value",
+                    "currency",
+                    "exponent"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "integer",
+                      "description": "Value of the amount in currency's minor units",
+                      "default": 0,
+                      "examples": [
+                        100
+                      ]
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code of the amount according ISO 4217",
+                      "default": "",
+                      "examples": [
+                        "EUR"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "exponent": {
+                      "type": "integer",
+                      "description": "Indicates the 10 exponent of the amount.",
+                      "default": 0,
+                      "examples": [
+                        2
+                      ]
+                    }
+                  }
+                },
+                "amount": {
+                  "type": "object",
+                  "description": "Amount that applies the promotion for the item",
+                  "required": [
+                    "value",
+                    "currency",
+                    "exponent"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "integer",
+                      "description": "Value of the amount in currency's minor units",
+                      "default": 0,
+                      "examples": [
+                        100
+                      ]
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency code of the amount according ISO 4217",
+                      "default": "",
+                      "examples": [
+                        "EUR"
+                      ],
+                      "pattern": "^(.*)$"
+                    },
+                    "exponent": {
+                      "type": "integer",
+                      "description": "Indicates the 10 exponent of the amount.",
+                      "default": 0,
+                      "examples": [
+                        2
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "logisticOrders": {
+      "type": "array",
+      "description": "List of logistic orders that contains the items of the order",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "substatus",
+          "ffmCenterCode",
+          "ffmCenterType",
+          "optimumDistribution",
+          "delivery",
+          "orderItemIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Public identifier of the logistic order",
+            "default": 0,
+            "examples": [
+              23
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the logistic order",
+            "enum": [
+              "RECEIVED",
+              "PREPARING",
+              "SHIPPED",
+              "CLOSED",
+              "CANCELLED"
+            ]
+          },
+          "substatus": {
+            "type": "string",
+            "description": "Substatus of the logistic order",
+            "enum": [
+              "RECEIVED",
+              "SENT_FFC",
+              "IN_FFC",
+              "UNDER_REVIEW",
+              "EXPEDITED",
+              "IN_COURIER",
+              "IN_STORE",
+              "IN_DROPPOINT",
+              "DELIVERY_ATTEMPTED",
+              "DELIVERED_TO_CUSTOMER",
+              "DELIVERED_IN_DROPPOINT",
+              "REJECTED",
+              "DELIVERY_OMISSION",
+              "MISSED",
+              "EXPIRED",
+              "CANCELLED"
+            ]
+          },
+          "ffmCenterCode": {
+            "type": "string",
+            "description": "Shipping fulfillment center code(EXTFFMCENTER_ID, old stockSourceCode)",
+            "default": "",
+            "examples": [
+              "a_ffmCenterCode"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "ffmCenterType": {
+            "type": "string",
+            "description": "Shipping fulfillment center type",
+            "enum": [
+              "WAREHOUSE",
+              "STORE",
+              "CONSIGNA"
+            ]
+          },
+          "courierId": {
+            "type": "string",
+            "description": "Indentifier of the courier that will ship the logistic order",
+            "default": "",
+            "examples": [
+              "a_courierId"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "courierName": {
+            "type": "string",
+            "description": "Name of the courier that will ship the logistic order",
+            "default": "",
+            "examples": [
+              "a_courierName"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "trackingNumber": {
+            "type": "string",
+            "description": "Identifier of the logistic order tracking info",
+            "default": "",
+            "examples": [
+              "a_trackingNumber"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "trackingUrl": {
+            "type": "string",
+            "description": "URL where request the tracking info of the logistic order",
+            "default": "",
+            "examples": [
+              "a_trackingUrl"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "trackingNumberRequired": {
+            "type": "boolean",
+            "description": "Is the tracking number required?",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "optimumDistribution": {
+            "type": "boolean",
+            "description": "If the value is false it indicates that the order is cross (true by default)",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "expeditionDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order was expedited (UTC)",
+            "default": "",
+            "examples": [
+              "2019-11-06T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "rejectionDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order was rejected (UTC)",
+            "default": "",
+            "examples": [
+              "2019-11-06T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "deliveryDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order was delivered (UTC)",
+            "default": "",
+            "examples": [
+              "2019-12-07T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "inCourierDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order arrived to the courier (UTC)",
+            "default": "",
+            "examples": [
+              "2019-12-08T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "inStoreDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order arrived to the store (UTC)",
+            "default": "",
+            "examples": [
+              "2019-12-09T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "inDropPointDatetime": {
+            "type": "string",
+            "description": "Date when the logistic order arrived to the drop point (UTC)",
+            "default": "",
+            "examples": [
+              "2019-12-09T10:15:30Z"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "delivery": {
+            "type": "object",
+            "description": "Set of info about the estimated delivery date of the logistic order",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "currentMinimumDate": {
+                "type": "string",
+                "description": "Indicates if the estimated delivery is on time or delayed (UTC)",
+                "default": "",
+                "examples": [
+                  "2019-11-09T10:15:30Z"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "currentMaximumDate": {
+                "type": "string",
+                "description": "Estimated minimum date when the delivery will be done (UTC)",
+                "default": "",
+                "examples": [
+                  "2019-11-11T10:15:30Z"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "status": {
+                "type": "string",
+                "description": "Estimated maximum date when the delivery will be done",
+                "enum": [
+                  "UNKNOWN",
+                  "EARLY",
+                  "DELAYED",
+                  "ON_TIME"
+                ]
+              }
+            }
+          },
+          "pickUp": {
+            "type": "object",
+            "description": "Set of info about the pick up point where the logistic order will be delivered (in case)",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Code that the customer needs to pick up the logistic order in the pick up point",
+                "default": "",
+                "examples": [
+                  "a_code"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "disposerLocation": {
+                "type": "string",
+                "description": "Info about where is located the logistic order inside the pick up point",
+                "default": "",
+                "examples": [
+                  "a_disposerLocation"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "orderItemIds": {
+            "type": "array",
+            "description": "List of item identifiers that include the logistic order",
+            "items": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "an_orderItemId",
+                "another_orderItemId"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        }
+      }
+    },
+    "shippings": {
+      "type": "array",
+      "description": "Info about the different shippings of the order",
+      "items": {
+        "type": "object",
+        "required": [
+          "mode",
+          "type",
+          "range",
+          "accuracy",
+          "orderItemIds"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "description": "Mode of shipping chosen by the customer",
+            "examples": [
+              "CONVERSION"
+            ],
+            "enum": [
+              "EXPRESS",
+              "STANDARD",
+              "DEFERRED_STANDARD",
+              "STORE",
+              "DDD",
+              "DROPPOINT",
+              "SAMEDAY",
+              "TRYON",
+              "VIRTUAL"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "Indicates if the shipping mode belongs to a home, store, dp or virtual shipping",
+            "enum": [
+              "HOME",
+              "DROPPOINT",
+              "STORE",
+              "VIRTUAL"
+            ]
+          },
+          "range": {
+            "type": "string",
+            "description": "Indicates the way of how will be shown the shipping dates to the customer",
+            "enum": [
+              "UNKNOWN",
+              "NO_TYPE",
+              "RANGE",
+              "MAX_DATE",
+              "MIN_DATE",
+              "DDD_DATE"
+            ]
+          },
+          "accuracy": {
+            "type": "string",
+            "description": "Date sensibility to send to user",
+            "enum": [
+              "DAY",
+              "HOUR",
+              "MINUTE"
+            ]
+          },
+          "geolocationPosition": {
+            "type": "string",
+            "description": "Coordinates corresponding to the shipping address",
+            "examples": [
+              "40.66228103637695, -7.9140400886535645"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "home": {
+            "type": "object",
+            "description": "Set of info relative to the shippings with type 'home'",
+            "required": [
+              "addressId",
+              "signatureRequired"
+            ],
+            "properties": {
+              "addressId": {
+                "type": "integer",
+                "description": "Identifier of the address where will be delivered the order",
+                "default": 0,
+                "examples": [
+                  32523
+                ]
+              },
+              "signatureRequired": {
+                "type": "boolean",
+                "description": "Indicates if the customer required that their signature were mandatory to deliver the order",
+                "default": false,
+                "examples": [
+                  false
+                ]
+              },
+              "ddd": {
+                "type": "object",
+                "description": "Set of info about DDD shipping mode",
+                "required": [
+                  "deliveryDayDescription",
+                  "deliverySlotCode",
+                  "deliverySlotDescription"
+                ],
+                "properties": {
+                  "deliveryDayCode": {
+                    "type": "string",
+                    "description": "Customer selection",
+                    "default": "",
+                    "examples": [
+                      "a_dayCode"
+                    ]
+                  },
+                  "deliveryDayDescription": {
+                    "type": "string",
+                    "description": "Customer selection",
+                    "default": "",
+                    "examples": [
+                      "a_dayDescription"
+                    ],
+                    "pattern": "^(.*)$"
+                  },
+                  "deliverySlotCode": {
+                    "type": "string",
+                    "description": "Customer selection",
+                    "default": "",
+                    "examples": [
+                      "a_slotCode"
+                    ],
+                    "pattern": "^(.*)$"
+                  },
+                  "deliverySlotDescription": {
+                    "type": "string",
+                    "description": "Customer selection",
+                    "default": "",
+                    "examples": [
+                      "a_slotDescription"
+                    ],
+                    "pattern": "^(.*)$"
+                  }
+                }
+              }
+            }
+          },
+          "droppoint": {
+            "type": "object",
+            "description": "Set of info relative to the shippings with type 'droppoint'",
+            "required": [
+              "id",
+              "code"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Identifier of the droppoint",
+                "default": 0,
+                "examples": [
+                  32524
+                ]
+              },
+              "code": {
+                "type": "string",
+                "description": "Code of the droppoint",
+                "default": "",
+                "examples": [
+                  "a_code"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "customerId": {
+                "type": "string",
+                "description": "Identifier of the customer in the droppoint",
+                "default": "",
+                "examples": [
+                  "a_customerId"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "customerEmail": {
+                "type": "string",
+                "description": " Email of the customer for the droppoint",
+                "default": "",
+                "examples": [
+                  "a_customerEmail@host.domain"
+                ],
+                "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,6}$"
+              },
+              "customerPhone": {
+                "type": "string",
+                "description": "Phone of the customer for the droppoint",
+                "default": "",
+                "examples": [
+                  "a_customerPhone"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "customerCode": {
+                "type": "string",
+                "description": "Code of the customer for the droppoint",
+                "default": "",
+                "examples": [
+                  "a_customerCode"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "store": {
+            "type": "object",
+            "description": "Set of info relative to the shippings with type 'store'",
+            "properties": {
+              "locationId": {
+                "type": "integer",
+                "description": "Identifier of the physical store for the shipment",
+                "default": 0,
+                "examples": [
+                  325245
+                ]
+              }
+            }
+          },
+          "virtual": {
+            "type": "object",
+            "description": "Set of info relative to the shippings with type 'virtual'",
+            "properties": {
+              "receiverEmail": {
+                "type": "string",
+                "description": "Customer selection",
+                "default": "",
+                "examples": [
+                  "a_receiverEmail@host.domain"
+                ],
+                "pattern": "^(.*)$",
+                "x-metadata": {
+                  "binding": {
+                    "entity": "Cliente",
+                    "attribute": "email",
+                    "version": "1.0.0"
+                  },
+                  "sensitivity": "RESTRINGIDA"
+                }
+              }
+            }
+          },
+          "orderItemIds": {
+            "type": "array",
+            "description": "List of item identifiers where applies the shipping info",
+            "items": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "an_orderItemId",
+                "another_orderItemId"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        }
+      }
+    },
+    "giftTickets": {
+      "type": "array",
+      "description": "Info relative to the gift tickets of the order (if it has any)",
+      "items": {
+        "type": "object",
+        "required": [
+          "packing",
+          "orderItemIds"
+        ],
+        "properties": {
+          "sender": {
+            "type": "string",
+            "description": "Customer selection",
+            "default": "",
+            "examples": [
+              "a_sender"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "message": {
+            "type": "string",
+            "description": "Customer selection",
+            "default": "",
+            "examples": [
+              "a_message"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "packing": {
+            "type": "boolean",
+            "description": "Does the items need to be gift-wrapped?",
+            "examples": [
+              true
+            ]
+          },
+          "orderItemIds": {
+            "type": "array",
+            "description": "List of item identifiers that are included in the giftticket and packing",
+            "items": {
+              "type": "string",
+              "default": "",
+              "examples": [
+                "an_orderItemId",
+                "another_orderItemId"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        }
+      }
+    },
+    "paymentMethods": {
+      "type": "array",
+      "description": "List of payments associated to the order",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the payment method (VISA, COD, etc.)",
+            "default": "",
+            "examples": [
+              "a_name"
+            ],
+            "pattern": "^(.*)$",
+            "x-metadata": {
+              "binding": {
+                "entity": "Tarjeta",
+                "attribute": "tipoTarjeta",
+                "version": "1.0.0"
+              },
+              "sensitivity": "RESTRINGIDA"
+            }
+          },
+          "walletTokenId": {
+            "type": "string",
+            "description": "Identifier of the element of the customer wallet used in the payment",
+            "default": "",
+            "examples": [
+              "a_walletTokenId"
+            ],
+            "pattern": "^(.*)$"
+          }
+        }
+      }
+    },
+    "availableOperations": {
+      "type": "array",
+      "description": "List of operations that a customer could do with the order",
+      "items": {
+        "type": "string",
+        "enum": [
+          "CANCEL"
+        ]
+      }
+    },
+    "barcode": {
+      "type": "string",
+      "description": "String to encode in a barcode",
+      "default": "",
+      "examples": [
+        "9941051621401881009709"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "qrCode": {
+      "type": "string",
+      "description": "String to encode in a QR code",
+      "default": "",
+      "examples": [
+        "1;9709;51621401881;2020-07-31T02:21:50.000Z;2020-08-31T23:59:59.999Z;41@0564433025003;1"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "outdated": {
+      "type": "boolean",
+      "description": "Is the order outdated? default and when other order is consumed, this value will be false",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "visible": {
+      "type": "boolean",
+      "description": "Is the order visible? default true",
+      "default": true,
+      "examples": [
+        true
+      ]
+    }
+  },
+  "isRestfulApi": false,
+  "required": [
+    "_class",
+    "_entity",
+    "_metadata",
+    "orderId",
+    "storeId",
+    "type",
+    "status",
+    "fraudStatus",
+    "stockStatus",
+    "paymentStatus",
+    "paymentSystem",
+    "manualReviewStatus",
+    "customerId",
+    "customerType",
+    "guestAction",
+    "preorder",
+    "fastSint",
+    "pvpTaxesIncluded",
+    "placedDatetime",
+    "lastUpdateDatetime",
+    "snapshotDatetime",
+    "snapshotTrigger",
+    "billing",
+    "origin",
+    "orderItems",
+    "logisticOrders",
+    "shippings",
+    "paymentMethods",
+    "availableOperations",
+    "outdated",
+    "visible"
+  ],
+  "additionalProperties": false
+}

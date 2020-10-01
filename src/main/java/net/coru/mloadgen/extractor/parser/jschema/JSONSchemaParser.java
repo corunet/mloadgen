@@ -16,6 +16,7 @@ import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
+import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.Field;
 import net.coru.mloadgen.model.json.IntegerField;
 import net.coru.mloadgen.model.json.NumberField;
@@ -264,7 +265,7 @@ public class JSONSchemaParser implements SchemaParser {
           result = buildBooleanField(fieldName);
           break;
         default:
-          result = StringField.builder().name(fieldName).build();
+          result = buildStringField(fieldName, jsonNode);
           break;
       }
     } else {
@@ -277,6 +278,32 @@ public class JSONSchemaParser implements SchemaParser {
       }
     }
     return result;
+  }
+
+  private Field buildStringField(String fieldName, JsonNode jsonNode) {
+    Field result;
+    if (Objects.isNull(jsonNode.get("enum"))) {
+      result = StringField.builder().name(fieldName).build();
+    } else {
+      result = buildEnumField(fieldName, jsonNode);
+    }
+    return result;
+  }
+
+  private Field buildEnumField(String fieldName, JsonNode jsonNode) {
+    List<String> valueList = new ArrayList<>();
+    if (jsonNode.get("enum").isArray()) {
+      valueList = extractValues(jsonNode.get("enum").elements());
+    }
+    return EnumField.builder().name(fieldName).defaultValue(valueList.get(0)).enumValues(valueList).build();
+  }
+
+  private List<String> extractValues(Iterator<JsonNode> enumValueList) {
+    List<String> valueList = new ArrayList<>();
+    while (enumValueList.hasNext()) {
+      valueList.add(enumValueList.next().asText());
+    }
+    return valueList;
   }
 
   private boolean isAnyType(JsonNode node) {
