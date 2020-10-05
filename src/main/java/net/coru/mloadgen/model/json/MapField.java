@@ -1,5 +1,7 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.Collections;
+import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -11,6 +13,11 @@ import lombok.Value;
 public class MapField extends Field{
 
 	Field mapType;
+
+	@Override
+	public List<Field> getProperties() {
+		return Collections.singletonList(this);
+	}
 
 	@Builder(toBuilder = true)
 	public MapField(String name, Field mapType) {

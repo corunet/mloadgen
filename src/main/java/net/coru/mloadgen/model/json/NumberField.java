@@ -1,5 +1,7 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.ToString;
@@ -20,6 +22,11 @@ public class NumberField extends Field {
 	Number exclusiveMaximum;
 
 	Number multipleOf;
+
+	@Override
+	public List<Field> getProperties() {
+		return Collections.singletonList(this);
+	}
 
 	@Builder(toBuilder = true)
 	public NumberField(String name, String defaultValue, Number minimum, Number maximum, Number exclusiveMinimum,
@@ -66,6 +73,12 @@ public class NumberField extends Field {
 	}
 
 	public boolean compare(Number a, Number b){
-			return a.toString().equalsIgnoreCase(b.toString());
+		boolean equals = false;
+		  if (Objects.equals(a, b)) {
+		  	equals = true;
+			} else if (Objects.nonNull(a)) {
+		  	equals = a.toString().equalsIgnoreCase(b.toString());
+			}
+			return equals;
 	}
 }

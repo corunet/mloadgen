@@ -1,5 +1,7 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.Collections;
+import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,6 +17,11 @@ public class IntegerField extends Field {
 	int minimum;
 
 	int maximum;
+
+	@Override
+	public List<Field> getProperties() {
+		return Collections.singletonList(this);
+	}
 
 	@Builder(toBuilder = true)
 	public IntegerField(String name, String defaultValue, int minimum, int maximum) {

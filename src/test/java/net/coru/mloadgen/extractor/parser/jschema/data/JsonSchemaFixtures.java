@@ -296,7 +296,6 @@ public class JsonSchemaFixtures {
                      .build())
                  .build())
               .build())
-              .property(BooleanField.builder().name("isRestfulApi").build())
               .requiredFields(asList("_class","_entity", "_metadata","orderId","storeId","type", "status","origin","orderItems"))
               .definitions(asList(
                   ObjectField

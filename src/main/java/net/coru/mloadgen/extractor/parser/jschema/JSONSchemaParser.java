@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -223,7 +224,7 @@ public class JSONSchemaParser implements SchemaParser {
       List<Field> fieldList = new ArrayList<>();
       jsonNode.fields()
               .forEachRemaining(property -> fieldList.add(buildProperty(property.getKey(), property.getValue())));
-      return ObjectField.builder().properties(fieldList).build();
+      return ObjectField.builder().name(fieldName).properties(fieldList).build();
     }
   }
 
@@ -323,18 +324,41 @@ public class JSONSchemaParser implements SchemaParser {
   }
 
   private Field chooseAnyOf(String fieldName, JsonNode jsonNode, String type) {
-    List<String> options = IteratorUtils.toList(jsonNode.get(type).fieldNames());
-    int optionsNumber = options.size();
+    List<JsonNode> properties = IteratorUtils.toList(jsonNode.get(type).elements());
+    int optionsNumber = properties.size();
     Field resultObject;
     switch (type) {
       case "anyOf":
       case "oneOf":
-        resultObject = buildObjectField(fieldName, jsonNode.path(type).get(RandomUtils.nextInt(0, optionsNumber)));
+        resultObject = buildCombinedField(fieldName, Collections.singletonList(properties.get(RandomUtils.nextInt(0, optionsNumber))));
       break;
       default:
-        resultObject = buildObjectField(fieldName, jsonNode.path(type));
+        resultObject = buildCombinedField(fieldName, properties);
         break;
     }
+    return resultObject;
+  }
+
+  private Field buildCombinedField(String fieldName, List<JsonNode> properties) {
+    Field resultObject;
+    List<Field> fields = new ArrayList<>();
+    for (JsonNode property : properties) {
+      if (isRefNode(property)) {
+        String referenceName = extractRefName(property);
+        Field refField = definitionsMap.get(referenceName).cloneField(fieldName);
+        if (isAnyType(property)) {
+          fields.add(refField);
+        } else {
+          fields.addAll(refField.getProperties());
+        }
+      } else {
+        for (Iterator<Entry<String, JsonNode>> it = property.get("properties").fields(); it.hasNext(); ) {
+          Entry<String, JsonNode> innProperty = it.next();
+          fields.add(buildProperty(innProperty.getKey(), innProperty.getValue()));
+        }
+      }
+    }
+    resultObject = buildObjectField(fieldName, fields);
     return resultObject;
   }
 
@@ -382,16 +406,6 @@ public class JSONSchemaParser implements SchemaParser {
         .build();
   }
 
-  private Field buildArrayField(String fieldName, Field value) {
-
-    return ArrayField
-        .builder()
-        .name(fieldName)
-        .value(value)
-        .minItems(1)
-        .build();
-  }
-
   private Field buildObjectField(String fieldName, JsonNode jsonNode) {
     List<Field> properties = new ArrayList<>();
     List<String> strRequired = jsonNode.findValuesAsText("required");
@@ -410,6 +424,10 @@ public class JSONSchemaParser implements SchemaParser {
       }
       return result;
     }
+  }
+
+  private Field buildObjectField(String fieldName, List<Field> properties) {
+    return ObjectField.builder().name(fieldName).properties(properties).build();
   }
 
   private Field buildBooleanField(String fieldName) {

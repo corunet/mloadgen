@@ -1,12 +1,12 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Singular;
 import lombok.ToString;
 import lombok.Value;
-import lombok.experimental.SuperBuilder;
 
 @Value
 @ToString(callSuper = true)
@@ -17,6 +17,11 @@ public class EnumField extends Field {
 
 	@Singular
 	List<String> enumValues;
+
+	@Override
+	public List<Field> getProperties() {
+		return Collections.singletonList(this);
+	}
 
 	@Builder(toBuilder = true)
 	public EnumField(String name, String defaultValue, List<String> enumValues) {

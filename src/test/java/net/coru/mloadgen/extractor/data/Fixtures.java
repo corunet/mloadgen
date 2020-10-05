@@ -1,5 +1,7 @@
 package net.coru.mloadgen.extractor.data;
 
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
@@ -10,9 +12,6 @@ import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
-
-
-import static java.util.Arrays.asList;
 
 public class Fixtures {
 
@@ -159,7 +158,7 @@ public class Fixtures {
                  new FieldValueMapping("surname", "string"),
                  new FieldValueMapping("address.street", "string"),
                  new FieldValueMapping("address.number", "number"),
-                 new FieldValueMapping("eye_color", "enum")
+                 new FieldValueMapping("eye_color", "enum", 0, "brown,blue,green")
           );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =

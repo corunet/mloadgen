@@ -722,7 +722,6 @@
       }
     }
   },
-  "isRestfulApi": false,
   "required": [
     "_class",
     "_entity",
