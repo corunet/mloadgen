@@ -6,6 +6,16 @@
 
 package net.coru.mloadgen.extractor;
 
+import static java.lang.String.join;
+import static java.util.Collections.singletonList;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.EXCLUDED_MAXIMUM_VALUE;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.EXCLUDED_MINIMUM_VALUE;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.FORMAT;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.MAXIMUM_VALUE;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.MINIMUM_VALUE;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.MULTIPLE_OF;
+import static net.coru.mloadgen.util.ConstraintTypeEnum.REGEX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,18 +28,19 @@ import java.util.stream.Stream;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.extractor.parser.jschema.JSONSchemaParser;
 import net.coru.mloadgen.extractor.parser.jschema.JSchemaParser;
+import net.coru.mloadgen.util.ConstraintTypeEnum;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.Field;
 import net.coru.mloadgen.model.json.MapField;
+import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
+import net.coru.mloadgen.model.json.StringField;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
-
-import static java.lang.String.join;
-import static java.util.Collections.singletonList;
+import org.apache.commons.lang3.StringUtils;
 
 public class SchemaExtractorImpl implements SchemaExtractor {
 
@@ -98,28 +109,72 @@ public class SchemaExtractorImpl implements SchemaExtractor {
     } else if (innerField instanceof ArrayField) {
       completeFieldList.addAll(extractArrayInternalFields((ArrayField) innerField));
     } else if (innerField instanceof EnumField) {
-      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType(), 0,
-              join(",", ((EnumField) innerField).getEnumValues())));
+      completeFieldList.add(FieldValueMapping
+          .builder()
+          .fieldName(innerField.getName())
+          .fieldType(innerField.getType())
+          .valueLength(0)
+          .fieldValueList(join(",", ((EnumField) innerField).getEnumValues()))
+          .build());
     } else if (innerField instanceof MapField) {
       completeFieldList.addAll(extractMapInternalFields((MapField) innerField));
+    } else if (innerField instanceof NumberField) {
+      FieldValueMapping.FieldValueMappingBuilder builder = FieldValueMapping
+          .builder()
+          .fieldName(innerField.getName())
+          .fieldType(innerField.getType());
+
+      addConstraint(builder, EXCLUDED_MAXIMUM_VALUE, getSafeNumberAsString(((NumberField) innerField).getExclusiveMaximum()));
+      addConstraint(builder, EXCLUDED_MINIMUM_VALUE, getSafeNumberAsString(((NumberField) innerField).getExclusiveMinimum()));
+      addConstraint(builder, MAXIMUM_VALUE, getSafeNumberAsString(((NumberField) innerField).getMaximum()));
+      addConstraint(builder, MINIMUM_VALUE, getSafeNumberAsString(((NumberField) innerField).getMinimum()));
+      addConstraint(builder, MULTIPLE_OF, getSafeNumberAsString(((NumberField) innerField).getMultipleOf()));
+
+      completeFieldList.add(builder.build());
+    } else if (innerField instanceof StringField) {
+      FieldValueMapping.FieldValueMappingBuilder builder = FieldValueMapping
+          .builder()
+          .fieldName(innerField.getName())
+          .fieldType(innerField.getType());
+
+      addConstraint(builder, REGEX, ((StringField) innerField).getRegex());
+      addConstraint(builder, MAXIMUM_VALUE, getSafeNumberAsString(((StringField) innerField).getMaxlength()));
+      addConstraint(builder, MINIMUM_VALUE, getSafeNumberAsString(((StringField) innerField).getMinLength()));
+      addConstraint(builder, FORMAT, ((StringField) innerField).getFormat());
+
+      completeFieldList.add(builder.build());
     } else {
-      completeFieldList.add(new FieldValueMapping(innerField.getName(), innerField.getType()));
+      completeFieldList.add(FieldValueMapping.builder().fieldName(innerField.getName()).fieldType(innerField.getType()).build());
     }
     return completeFieldList;
+  }
+
+  private void addConstraint(FieldValueMapping.FieldValueMappingBuilder builder, ConstraintTypeEnum constrain, String constrainValue) {
+    if (StringUtils.isNotBlank(constrainValue)) {
+      builder.constrain(constrain, constrainValue);
+    }
+  }
+
+  private String getSafeNumberAsString(Number exclusiveMaximum) {
+    String result = null;
+    if (Objects.nonNull(exclusiveMaximum)) {
+      result = exclusiveMaximum.toString();
+    }
+    return result;
   }
 
   private List<FieldValueMapping> extractArrayInternalFields(ArrayField innerField) {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     for (Field value : innerField.getValues()) {
       if (value instanceof ObjectField) {
-        for (Field arrayElementField : ((ObjectField) value).getProperties()) {
+        for (Field arrayElementField : value.getProperties()) {
           CollectionUtils.collect(
             processField(arrayElementField),
             fixName(innerField.getName(), "[]."),
             completeFieldList);
         }
       } else {
-        completeFieldList.add(new FieldValueMapping(innerField.getName() + "[]", value.getType() + "-array"));
+        completeFieldList.add(FieldValueMapping.builder().fieldName(innerField.getName() + "[]").fieldType( value.getType() + "-array").build());
       }
     }
     return completeFieldList;
@@ -129,14 +184,14 @@ public class SchemaExtractorImpl implements SchemaExtractor {
     List<FieldValueMapping> completeFieldList = new ArrayList<>();
     Field value = innerField.getMapType();
     if (value instanceof ObjectField) {
-      for (Field arrayElementField : ((ObjectField) value).getProperties()) {
+      for (Field arrayElementField : value.getProperties()) {
         CollectionUtils.collect(
                 processField(arrayElementField),
                 fixName(innerField.getName(), "[][]."),
                 completeFieldList);
       }
     } else {
-      completeFieldList.add(new FieldValueMapping(innerField.getName() + "[]", value.getType() + "-map"));
+      completeFieldList.add(FieldValueMapping.builder().fieldName(innerField.getName() + "[]").fieldType(value.getType() + "-map").build());
     }
     return completeFieldList;
   }

@@ -6,19 +6,21 @@
 
 package net.coru.mloadgen.model;
 
+import static java.util.Arrays.asList;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import net.coru.mloadgen.util.ConstraintTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.testelement.AbstractTestElement;
 
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-
-@Builder
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -34,6 +36,8 @@ public class FieldValueMapping extends AbstractTestElement {
     private Integer valueLength;
     private String fieldValueList;
 
+    private Map<ConstraintTypeEnum, String> constrains = new EnumMap<>(ConstraintTypeEnum.class);
+
     public FieldValueMapping(String fieldName, String fieldType) {
         this.setFieldName(fieldName);
         this.setValueLength(0);
@@ -42,9 +46,19 @@ public class FieldValueMapping extends AbstractTestElement {
 
     public FieldValueMapping(String fieldName, String fieldType, Integer valueLength, String valueList) {
         this.setFieldName(fieldName);
-        this.setValueLength(valueLength);
+        this.setValueLength(Objects.requireNonNullElse(valueLength, 0));
         this.setFieldType(fieldType);
         this.setFieldValuesList(valueList);
+    }
+
+    @Builder
+    public FieldValueMapping(String fieldName, String fieldType, Integer valueLength, String fieldValueList,
+        Map<ConstraintTypeEnum, String> constrains) {
+        this.setFieldName(fieldName);
+        this.setValueLength(Objects.requireNonNullElse(valueLength, 0));
+        this.setFieldType(fieldType);
+        this.setFieldValuesList(Objects.requireNonNullElse(fieldValueList, ""));
+        this.constrains = constrains;
     }
 
     public String getFieldName() {
@@ -76,9 +90,9 @@ public class FieldValueMapping extends AbstractTestElement {
 
     public List<String> getFieldValuesList() {
         List<String> result;
-        String fieldValueList = getPropertyAsString(FIELD_VALUES_LIST);
-        if (StringUtils.isNotBlank(fieldValueList) && !"[]".equalsIgnoreCase(fieldValueList)) {
-            result = asList(fieldValueList.split(",", -1));
+        String inputFieldValueList = getPropertyAsString(FIELD_VALUES_LIST);
+        if (StringUtils.isNotBlank(inputFieldValueList) && !"[]".equalsIgnoreCase(inputFieldValueList)) {
+            result = asList(inputFieldValueList.split(",", -1));
         } else {
             result = Collections.emptyList();
         }
@@ -92,5 +106,29 @@ public class FieldValueMapping extends AbstractTestElement {
 
     public void init() {
         this.setName("Object Field");
+    }
+
+    public Map<ConstraintTypeEnum, String> getConstrains() {
+        return constrains;
+    }
+
+    public static class FieldValueMappingBuilder {
+
+        private Map<ConstraintTypeEnum, String> constrains = new EnumMap<>(ConstraintTypeEnum.class);
+
+        public FieldValueMappingBuilder constrain(ConstraintTypeEnum key, String value) {
+            constrains.putIfAbsent(key, value);
+            return this;
+        }
+
+        public FieldValueMappingBuilder constrains(Map<ConstraintTypeEnum, String> newConstrains) {
+            constrains.putAll(newConstrains);
+            return this;
+        }
+
+        public FieldValueMappingBuilder clearConstrains() {
+            constrains.clear();
+            return this;
+        }
     }
 }

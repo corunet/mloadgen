@@ -1,3 +1,9 @@
+/*
+ *  This Source Code Form is subject to the terms of the Mozilla Public
+ *  * License, v. 2.0. If a copy of the MPL was not distributed with this
+ *  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package net.coru.mloadgen.extractor.parser.jschema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -296,9 +302,29 @@ public class JSONSchemaParser implements SchemaParser {
   private Field buildStringField(String fieldName, JsonNode jsonNode) {
     Field result;
     if (Objects.isNull(jsonNode.get("enum"))) {
-      result = StringField.builder().name(fieldName).build();
+      String regexStr = getSafeText(jsonNode, "pattern");
+      int minLength = getSafeInt(jsonNode, "minLength");
+      int maxLength = getSafeInt(jsonNode, "maxLength");
+      String format = getSafeText(jsonNode, "format");
+      result = StringField.builder().name(fieldName).regex(regexStr).minLength(minLength).maxlength(maxLength).format(format).build();
     } else {
       result = buildEnumField(fieldName, jsonNode);
+    }
+    return result;
+  }
+
+  private int getSafeInt(JsonNode node, String field) {
+    int result = 0;
+    if (Objects.nonNull(node.get(field))) {
+      result = node.get(field).asInt();
+    }
+    return result;
+  }
+
+  private String getSafeText(JsonNode node, String field) {
+    String result = null;
+    if (Objects.nonNull(node.get(field))) {
+      result = node.get(field).asText();
     }
     return result;
   }
