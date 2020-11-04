@@ -23,6 +23,7 @@ import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
+import net.coru.mloadgen.model.json.DateField;
 import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.Field;
 import net.coru.mloadgen.model.json.IntegerField;
@@ -287,7 +288,7 @@ public class JSONSchemaParser implements SchemaParser {
           result = buildStringField(fieldName, jsonNode);
           break;
       }
-    } else {
+    } else if (isCombine(jsonNode)) {
       if (Objects.nonNull(jsonNode.get("anyOf"))) {
         result = chooseAnyOf(fieldName, jsonNode, "anyOf");
       } else if (Objects.nonNull(jsonNode.get("allOf"))) {
@@ -295,8 +296,16 @@ public class JSONSchemaParser implements SchemaParser {
       } else {
         result = chooseAnyOf(fieldName, jsonNode, "oneOf");
       }
+    } else if (hasProperties(jsonNode)){
+      result = buildObjectField(fieldName, jsonNode);
+    } else {
+      throw new MLoadGenException("Not supported file");
     }
     return result;
+  }
+
+  private boolean hasProperties(JsonNode jsonNode) {
+    return Objects.nonNull(jsonNode.get("properties"));
   }
 
   private Field buildStringField(String fieldName, JsonNode jsonNode) {
@@ -306,7 +315,11 @@ public class JSONSchemaParser implements SchemaParser {
       int minLength = getSafeInt(jsonNode, "minLength");
       int maxLength = getSafeInt(jsonNode, "maxLength");
       String format = getSafeText(jsonNode, "format");
-      result = StringField.builder().name(fieldName).regex(regexStr).minLength(minLength).maxlength(maxLength).format(format).build();
+      if (Set.of("date-time", "time", "date").contains(format)) {
+        result = DateField.builder().name(fieldName).format(format).build();
+      } else {
+        result = StringField.builder().name(fieldName).regex(regexStr).minLength(minLength).maxlength(maxLength).format(format).build();
+      }
     } else {
       result = buildEnumField(fieldName, jsonNode);
     }

@@ -6,6 +6,7 @@
 
 package net.coru.mloadgen.util;
 
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 import org.apache.jmeter.threads.JMeterContextService;
 
 import java.util.ArrayList;

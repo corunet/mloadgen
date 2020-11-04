@@ -4,7 +4,7 @@
  *  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package net.coru.mloadgen.util;
+package net.coru.mloadgen.model;
 
 public enum ConstraintTypeEnum {
 

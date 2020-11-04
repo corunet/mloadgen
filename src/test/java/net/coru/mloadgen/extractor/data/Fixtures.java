@@ -1,7 +1,7 @@
 package net.coru.mloadgen.extractor.data;
 
 import static java.util.Arrays.asList;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.MINIMUM_VALUE;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.MINIMUM_VALUE;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
-import net.coru.mloadgen.util.ConstraintTypeEnum;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 
 public class Fixtures {
 

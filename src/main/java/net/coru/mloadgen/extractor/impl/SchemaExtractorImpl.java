@@ -4,17 +4,17 @@
  *  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package net.coru.mloadgen.extractor;
+package net.coru.mloadgen.extractor.impl;
 
 import static java.lang.String.join;
 import static java.util.Collections.singletonList;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.EXCLUDED_MAXIMUM_VALUE;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.EXCLUDED_MINIMUM_VALUE;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.FORMAT;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.MAXIMUM_VALUE;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.MINIMUM_VALUE;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.MULTIPLE_OF;
-import static net.coru.mloadgen.util.ConstraintTypeEnum.REGEX;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.EXCLUDED_MAXIMUM_VALUE;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.EXCLUDED_MINIMUM_VALUE;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.FORMAT;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.MAXIMUM_VALUE;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.MINIMUM_VALUE;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.MULTIPLE_OF;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.REGEX;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.coru.mloadgen.extractor.SchemaExtractor;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
 import net.coru.mloadgen.extractor.parser.jschema.JSONSchemaParser;
 import net.coru.mloadgen.extractor.parser.jschema.JSchemaParser;
-import net.coru.mloadgen.util.ConstraintTypeEnum;
+import net.coru.mloadgen.model.json.DateField;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.EnumField;
@@ -143,6 +145,8 @@ public class SchemaExtractorImpl implements SchemaExtractor {
       addConstraint(builder, FORMAT, ((StringField) innerField).getFormat());
 
       completeFieldList.add(builder.build());
+    } if (innerField instanceof DateField) {
+      completeFieldList.add(FieldValueMapping.builder().fieldType(innerField.getType()).fieldName(innerField.getName()).build());
     } else {
       completeFieldList.add(FieldValueMapping.builder().fieldName(innerField.getName()).fieldType(innerField.getType()).build());
     }

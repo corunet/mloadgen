@@ -19,7 +19,7 @@ import java.util.Objects;
 import lombok.SneakyThrows;
 import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.model.FieldValueMapping;
-import net.coru.mloadgen.util.ConstraintTypeEnum;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 import net.coru.mloadgen.util.StatelessRandomTool;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;

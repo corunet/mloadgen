@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileSystemView;
 import lombok.extern.slf4j.Slf4j;
 import net.coru.mloadgen.extractor.SchemaExtractor;
-import net.coru.mloadgen.extractor.SchemaExtractorImpl;
+import net.coru.mloadgen.extractor.impl.SchemaExtractorImpl;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.util.AutoCompletion;
