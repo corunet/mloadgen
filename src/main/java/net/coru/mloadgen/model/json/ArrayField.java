@@ -31,6 +31,11 @@ public class ArrayField extends Field{
 		return this.toBuilder().name(fieldName).build();
 	}
 
+	@Override
+	public List<Field> getProperties() {
+		return values;
+	}
+
 	public static class ArrayFieldBuilder {
 
 		private List<Field> values = new ArrayList<>();

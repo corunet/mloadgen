@@ -1,5 +1,6 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,4 +16,6 @@ public abstract class Field {
 	String type;
 
 	public abstract Field cloneField(String fieldName);
+
+	public abstract List<Field> getProperties();
 }

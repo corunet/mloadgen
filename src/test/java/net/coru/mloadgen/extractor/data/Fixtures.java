@@ -1,6 +1,10 @@
 package net.coru.mloadgen.extractor.data;
 
+import static java.util.Arrays.asList;
+import static net.coru.mloadgen.model.ConstraintTypeEnum.MINIMUM_VALUE;
+
 import java.util.List;
+import java.util.Map;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
@@ -10,11 +14,13 @@ import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
-
-
-import static java.util.Arrays.asList;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 
 public class Fixtures {
+
+  private final static Map<ConstraintTypeEnum, String> STRING_DEFAULTS = Map.of(
+      ConstraintTypeEnum.MAXIMUM_VALUE, "0",
+      MINIMUM_VALUE, "0");
 
   public static final Schema SIMPLE_SCHEMA =
     Schema
@@ -24,12 +30,12 @@ public class Fixtures {
       .build();
 
   public static final List<FieldValueMapping> EXPECTED_SIMPLE_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string"),
-                 new FieldValueMapping("surname", "string"));
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build());
 
   public static final List<FieldValueMapping> DEFINED_SIMPLE_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string", 0, "name"),
-                 new FieldValueMapping("surname", "string", 0, "surname"));
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build());
 
   public static final Schema MEDIUM_SCHEMA =
       Schema
@@ -45,17 +51,16 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string"),
-                 new FieldValueMapping("surname", "string"),
-                 new FieldValueMapping("address.street", "string"),
-                 new FieldValueMapping("address.number", "number")
-                 );
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").build());
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string", 0, "name"),
-                 new FieldValueMapping("surname", "string", 0, "surname"),
-                 new FieldValueMapping("address.street", "string", 0, "address"),
-                 new FieldValueMapping("address.number", "number", 0, "0")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("address").build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").fieldValueList("0").build()
           );
 
   public static final Schema MEDIUM_ARRAY_SCHEMA =
@@ -81,21 +86,21 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string"),
-                 new FieldValueMapping("surname", "string"),
-                 new FieldValueMapping("address.street", "string"),
-                 new FieldValueMapping("address.number", "number"),
-                 new FieldValueMapping("contactData[].mobile", "boolean"),
-                 new FieldValueMapping("contactData[].email", "string")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").build(),
+                 FieldValueMapping.builder().fieldName("contactData[].mobile").fieldType("boolean").build(),
+                 FieldValueMapping.builder().fieldName("contactData[].email").fieldType("string").constrains(STRING_DEFAULTS).build()
           );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string", 0, "name"),
-                 new FieldValueMapping("surname", "string", 0, "surname"),
-                 new FieldValueMapping("address.street", "string", 0, "street"),
-                 new FieldValueMapping("address.number", "number", 0, "0"),
-                 new FieldValueMapping("contactData[1].mobile", "boolean", 0, "true"),
-                 new FieldValueMapping("contactData[].email", "string", 0, "email")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("street").build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").fieldValueList("0").build(),
+                 FieldValueMapping.builder().fieldName("contactData[1].mobile").fieldType("boolean").fieldValueList("true").build(),
+                 FieldValueMapping.builder().fieldName("contactData[].email").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("email").build()
           );
 
   public static final Schema MEDIUM_SIMPLE_ARRAY_SCHEMA =
@@ -117,19 +122,19 @@ public class Fixtures {
                   .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string"),
-                 new FieldValueMapping("surname", "string"),
-                 new FieldValueMapping("address.street", "string"),
-                 new FieldValueMapping("address.number", "number"),
-                 new FieldValueMapping("contactData[]", "string-array")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").build(),
+                 FieldValueMapping.builder().fieldName("contactData[]").fieldType("string-array").build()
           );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string", 0, "name"),
-                 new FieldValueMapping("surname", "string", 0, "surname"),
-                 new FieldValueMapping("address.street", "string", 0, "street"),
-                 new FieldValueMapping("address.number", "number", 0, "0"),
-                 new FieldValueMapping("contactData[1]", "string-array", 0, "contactData")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("street").build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").fieldValueList("0").build(),
+                 FieldValueMapping.builder().fieldName("contactData[1]").fieldType("string-array").fieldValueList("contactData").build()
           );
 
   public static final Schema MEDIUM_ENUM_SCHEMA =
@@ -155,19 +160,19 @@ public class Fixtures {
           .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string"),
-                 new FieldValueMapping("surname", "string"),
-                 new FieldValueMapping("address.street", "string"),
-                 new FieldValueMapping("address.number", "number"),
-                 new FieldValueMapping("eye_color", "enum")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").build(),
+                 FieldValueMapping.builder().fieldName("eye_color").fieldType("enum").fieldValueList("brown,blue,green").build()
           );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING =
-          asList(new FieldValueMapping("name", "string", 0, "name"),
-                 new FieldValueMapping("surname", "string", 0, "surname"),
-                 new FieldValueMapping("address.street", "string", 0, "street"),
-                 new FieldValueMapping("address.number", "number", 0, "0"),
-                 new FieldValueMapping("eye_color", "enum", 0, "brown")
+          asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+                 FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build(),
+                 FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("street").build(),
+                 FieldValueMapping.builder().fieldName("address.number").fieldType("number").fieldValueList("0").build(),
+                 FieldValueMapping.builder().fieldName("eye_color").fieldType("enum").fieldValueList("brown").build()
           );
 
   public static final Schema MEDIUM_MAP_SCHEMA =
@@ -193,20 +198,20 @@ public class Fixtures {
                   .build();
 
   public static final List<FieldValueMapping> EXPECTED_MEDIUM_MAP_FIELD_VALUE_MAPPING =
-    asList(new FieldValueMapping("name", "string"),
-           new FieldValueMapping("surname", "string"),
-           new FieldValueMapping("address.street", "string"),
-           new FieldValueMapping("address.number", "number"),
-           new FieldValueMapping("contactData[][].mobile", "boolean"),
-           new FieldValueMapping("contactData[][].email", "string")
+    asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).build(),
+           FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).build(),
+           FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).build(),
+           FieldValueMapping.builder().fieldName("address.number").fieldType("number").build(),
+           FieldValueMapping.builder().fieldName("contactData[][].mobile").fieldType("boolean").build(),
+           FieldValueMapping.builder().fieldName("contactData[][].email").fieldType("string").constrains(STRING_DEFAULTS).build()
     );
 
   public static final List<FieldValueMapping> DEFINED_MEDIUM_MAP_FIELD_VALUE_MAPPING =
-    asList(new FieldValueMapping("name", "string", 0, "name"),
-           new FieldValueMapping("surname", "string", 0, "surname"),
-           new FieldValueMapping("address.street", "string", 0, "street"),
-           new FieldValueMapping("address.number", "number", 0, "0"),
-           new FieldValueMapping("contactData[1][].mobile", "boolean", 0, "true"),
-           new FieldValueMapping("contactData[1][].email", "string", 0, "email")
+    asList(FieldValueMapping.builder().fieldName("name").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("name").build(),
+           FieldValueMapping.builder().fieldName("surname").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("surname").build(),
+           FieldValueMapping.builder().fieldName("address.street").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("street").build(),
+           FieldValueMapping.builder().fieldName("address.number").fieldType("number").fieldValueList("0").build(),
+           FieldValueMapping.builder().fieldName("contactData[1][].mobile").fieldType("boolean").fieldValueList("true").build(),
+           FieldValueMapping.builder().fieldName("contactData[1][].email").fieldType("string").constrains(STRING_DEFAULTS).fieldValueList("email").build()
     );
 }

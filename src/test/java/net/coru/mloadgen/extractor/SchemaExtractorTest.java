@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Stream;
+import net.coru.mloadgen.extractor.impl.SchemaExtractorImpl;
 import net.coru.mloadgen.extractor.parser.util.ResourceAsFile;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.json.Schema;

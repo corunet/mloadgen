@@ -4,11 +4,15 @@
  *  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package net.coru.mloadgen.extractor.parser;
+package net.coru.mloadgen.model;
 
-import net.coru.mloadgen.model.json.Schema;
+public enum ConstraintTypeEnum {
 
-public interface SchemaParser {
-
-	Schema parse(String jsonSchema);
+  MINIMUM_VALUE,
+  MAXIMUM_VALUE,
+  EXCLUDED_MINIMUM_VALUE,
+  EXCLUDED_MAXIMUM_VALUE,
+  MULTIPLE_OF,
+  REGEX,
+  FORMAT
 }

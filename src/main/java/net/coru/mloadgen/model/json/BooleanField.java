@@ -1,5 +1,7 @@
 package net.coru.mloadgen.model.json;
 
+import java.util.Collections;
+import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,5 +20,10 @@ public class BooleanField extends Field {
 	@Override
 	public Field cloneField(String fieldName) {
 		return this.toBuilder().name(fieldName).build();
+	}
+
+	@Override
+	public List<Field> getProperties() {
+		return Collections.singletonList(this);
 	}
 }

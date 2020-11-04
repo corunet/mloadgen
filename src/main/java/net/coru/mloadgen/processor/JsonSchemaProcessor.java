@@ -15,9 +15,15 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.SneakyThrows;
 import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.model.FieldValueMapping;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
 import net.coru.mloadgen.util.StatelessRandomTool;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,13 +54,13 @@ public class JsonSchemaProcessor {
             fieldExpMappingsQueue.poll();
             entity.putPOJO(fieldName, createBasicMap(fieldValueMapping.getFieldType(),
                 calculateSize(fieldValueMapping.getFieldName(), fieldName),
-                fieldValueMapping.getFieldValuesList()));
+                fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
           } else if (fieldValueMapping.getFieldType().endsWith("map-array")) {
             fieldExpMappingsQueue.poll();
             entity.putPOJO(fieldName, createObjectMapArray(fieldValueMapping.getFieldType(),
                 calculateSize(fieldValueMapping.getFieldName(), fieldName),
                 fieldValueMapping.getValueLength(),
-                fieldValueMapping.getFieldValuesList()));
+                fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
           } else if (cleanUpPath(fieldValueMapping, "").contains("][]")) {
             entity.putArray(fieldName).addAll(
                     createObjectMap(
@@ -71,7 +77,7 @@ public class JsonSchemaProcessor {
                       fieldValueMapping.getFieldType(),
                       calculateSize(fieldValueMapping.getFieldName(), fieldName),
                       fieldValueMapping.getValueLength(),
-                      fieldValueMapping.getFieldValuesList()));
+                      fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
             fieldValueMapping = getSafeGetElement(fieldExpMappingsQueue);
           } else {
             entity.putArray(fieldName).addAll(
@@ -90,7 +96,7 @@ public class JsonSchemaProcessor {
                          randomToolJson.generateRandom(fieldName,
                              fieldValueMapping.getFieldType(),
                              fieldValueMapping.getValueLength(),
-                             fieldValueMapping.getFieldValuesList()), JsonNode.class));
+                             fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()), JsonNode.class));
           fieldExpMappingsQueue.remove();
           fieldValueMapping = fieldExpMappingsQueue.peek();
         }
@@ -114,14 +120,14 @@ public class JsonSchemaProcessor {
           String fieldNameSubEntity = getCleanMethodNameMap(fieldValueMapping, fieldName);
           subEntity.putPOJO(fieldNameSubEntity, createBasicMap(fieldValueMapping.getFieldType(),
                   calculateSize(fieldValueMapping.getFieldName(), fieldName),
-                  fieldValueMapping.getFieldValuesList()));
+                  fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
         } else if (fieldValueMapping.getFieldType().endsWith("map-array")){
           fieldExpMappingsQueue.poll();
           String fieldNameSubEntity = getCleanMethodNameMap(fieldValueMapping, fieldName);
           subEntity.putPOJO(fieldNameSubEntity, createObjectMapArray(fieldValueMapping.getFieldType(),
                   calculateSize(fieldValueMapping.getFieldName(), fieldName),
                   fieldValueMapping.getValueLength(),
-                  fieldValueMapping.getFieldValuesList()));
+                  fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
         } else if (cleanUpPath(fieldValueMapping, "").contains("][]")) {
           subEntity.putArray(fieldName).addAll(
                   createObjectMap(
@@ -137,7 +143,7 @@ public class JsonSchemaProcessor {
                           fieldValueMapping.getFieldType(),
                           calculateSize(fieldValueMapping.getFieldName(), fieldName),
                           fieldValueMapping.getValueLength(),
-                          fieldValueMapping.getFieldValuesList()));
+                          fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()));
         } else {
           String fieldNameSubEntity = getCleanMethodName(fieldValueMapping, fieldName);
           subEntity.putArray(fieldNameSubEntity).addAll(
@@ -156,7 +162,7 @@ public class JsonSchemaProcessor {
                         randomToolJson.generateRandom(cleanFieldName,
                                 fieldValueMapping.getFieldType(),
                                 fieldValueMapping.getValueLength(),
-                                fieldValueMapping.getFieldValuesList()), JsonNode.class));
+                                fieldValueMapping.getFieldValuesList(), fieldValueMapping.getConstrains()), JsonNode.class));
       }
       fieldValueMapping = getSafeGetElement(fieldExpMappingsQueue);
     }
@@ -174,13 +180,14 @@ public class JsonSchemaProcessor {
     return objectArray;
   }
 
-  private ArrayNode createBasicArray(String fieldName, String fieldType, Integer calculateSize, Integer valueSize, List<String> fieldValuesList) {
+  private ArrayNode createBasicArray(String fieldName, String fieldType, Integer calculateSize, Integer valueSize,
+      List<String> fieldValuesList, Map<ConstraintTypeEnum, String> constrains) {
     return mapper.convertValue(
               randomToolJson.generateRandomArray(fieldName,
                       fieldType,
                       calculateSize,
                       valueSize,
-                      fieldValuesList), ArrayNode.class);
+                      fieldValuesList, constrains), ArrayNode.class);
   }
 
   private boolean isBasicArray(String fieldType) {
@@ -198,14 +205,16 @@ public class JsonSchemaProcessor {
     return objectArray;
   }
 
-  private Object createBasicMap(String fieldType, Integer arraySize, List<String> fieldExpMappings)
+  private Object createBasicMap(String fieldType, Integer arraySize, List<String> fieldExpMappings,
+      Map<ConstraintTypeEnum, String> constrains)
   throws MLoadGenException {
-    return randomToolJson.generateRandomMap(fieldType, arraySize, fieldExpMappings, arraySize);
+    return randomToolJson.generateRandomMap(fieldType, arraySize, fieldExpMappings, arraySize, constrains);
   }
 
-  private Object createObjectMapArray(String fieldType, Integer arraySize, Integer mapSize, List<String> fieldExpMappings)
+  private Object createObjectMapArray(String fieldType, Integer arraySize, Integer mapSize, List<String> fieldExpMappings,
+      Map<ConstraintTypeEnum, String> constrains)
       throws MLoadGenException {
-    return randomToolJson.generateRandomMap(fieldType, mapSize, fieldExpMappings, arraySize);
+    return randomToolJson.generateRandomMap(fieldType, mapSize, fieldExpMappings, arraySize, constrains);
   }
 
   private Integer calculateSize(String fieldName, String methodName) {
