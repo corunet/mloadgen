@@ -11,21 +11,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.util.*;
-
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.SneakyThrows;
-
 import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.util.StatelessRandomTool;
-import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class JsonSchemaProcessor {
 
-  private static ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   private List<FieldValueMapping> fieldExprMappings;
 

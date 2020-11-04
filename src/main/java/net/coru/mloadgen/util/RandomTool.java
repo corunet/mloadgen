@@ -7,7 +7,6 @@
 package net.coru.mloadgen.util;
 
 import net.coru.mloadgen.exception.MLoadGenException;
-import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
@@ -18,8 +17,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
 public final class RandomTool {
-
-  public static final Set<String> VALID_TYPES = SetUtils.hashSet("map", "enum", "string", "int", "long", "timestamp", "stringTimestamp", "short", "double", "longTimestamp", "uuid", "array", "boolean", "bytes");
 
   private RandomTool() {}
 
@@ -52,12 +49,12 @@ public final class RandomTool {
         break;
     }
     if (fieldType.endsWith("array")) {
-      value = generateMapArray(fieldType, mapSize, fieldValueList, arraySize);
+      value = generateRandomMapArray(fieldType, mapSize, fieldValueList, arraySize);
     }
     return value;
   }
 
-  protected static Object generateMapArray(String type, Integer valueLength, List<String> fieldValueList, Integer arraySize) {
+  protected static Object generateRandomMapArray(String type, Integer valueLength, List<String> fieldValueList, Integer arraySize) {
     List<Map<String, Object>> generatedMapArray = new ArrayList<>(valueLength);
     for (int i = 0; i < arraySize; i++) {
       generatedMapArray.add((Map<String, Object>)generateRandomMap(type.substring(0, type.length() - 6), valueLength, fieldValueList, arraySize));
@@ -65,7 +62,7 @@ public final class RandomTool {
     return generatedMapArray;
   }
 
-  protected static Object generateArray(String fieldType, Integer valueLength, List<String> fieldValueList, Integer arraySize) {
+  protected static Object generateRandomArray(String fieldType, Integer valueLength, List<String> fieldValueList, Integer arraySize) {
     Object value;
     switch (fieldType) {
       case "int-array":
