@@ -31,7 +31,9 @@ import net.coru.mloadgen.model.json.NumberField;
 import net.coru.mloadgen.model.json.ObjectField;
 import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
+import net.coru.mloadgen.model.json.UUIDField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +41,20 @@ import org.apache.commons.lang3.StringUtils;
 public class JSONSchemaParser implements SchemaParser {
 
   private static final Set<String> cyclingSet = new HashSet<>();
+
+  public static final String REQUIRED = "required";
+
+  public static final String TYPE = "type";
+
+  public static final String PROPERTIES = "properties";
+
+  public static final String ANY_OF = "anyOf";
+
+  public static final String ALL_OF = "allOf";
+
+  public static final String ONE_OF = "oneOf";
+
+  public static final String $_REF = "$ref";
 
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -57,11 +73,11 @@ public class JSONSchemaParser implements SchemaParser {
 
       JsonNode schemaId = jsonNode.path("$id");
       JsonNode schemaName = jsonNode.path("$schema");
-      JsonNode requiredList = jsonNode.path("required");
-      JsonNode type = jsonNode.path("type");
+      JsonNode requiredList = jsonNode.path(REQUIRED);
+      JsonNode type = jsonNode.path(TYPE);
 
-      CollectionUtils.collect(jsonNode.path("properties").fieldNames(),
-          fieldName -> buildProperty(fieldName, jsonNode.path("properties").get(fieldName)),
+      CollectionUtils.collect(jsonNode.path(PROPERTIES).fieldNames(),
+          fieldName -> buildProperty(fieldName, jsonNode.path(PROPERTIES).get(fieldName)),
           fields);
       schema = Schema.builder()
               .id(schemaId.asText())
@@ -106,27 +122,7 @@ public class JSONSchemaParser implements SchemaParser {
   private Field buildDefinition(String fieldName, JsonNode jsonNode, JsonNode definitions) {
     Field result;
     if (isAnyType(jsonNode)) {
-      String nodeType = getSafeType(jsonNode);
-      switch (nodeType) {
-        case "integer":
-          result = IntegerField.builder().name(fieldName).build();
-          break;
-        case "number":
-          result = buildNumberField(fieldName, jsonNode);
-          break;
-        case "array":
-          result = buildDefinitionArrayField(fieldName, jsonNode, definitions);
-          break;
-        case "object":
-          result = buildDefinitionObjectField(fieldName, jsonNode, definitions);
-          break;
-        case "boolean":
-          result = buildBooleanField(fieldName);
-          break;
-        default:
-          result = buildStringField(fieldName, jsonNode);
-          break;
-      }
+      result = buildField(fieldName, jsonNode);
     } else if (isRefNode(jsonNode)) {
       String referenceName = extractRefName(jsonNode);
       if (definitionsMap.containsKey(referenceName)) {
@@ -140,12 +136,12 @@ public class JSONSchemaParser implements SchemaParser {
         }
       }
     } else if (isCombine(jsonNode)) {
-      if (Objects.nonNull(jsonNode.get("anyOf"))) {
-        result = chooseAnyOfDefinition(fieldName, jsonNode, "anyOf", definitions);
-      } else if (Objects.nonNull(jsonNode.get("allOf"))) {
-        result = chooseAnyOfDefinition(fieldName, jsonNode, "allOf", definitions);
+      if (Objects.nonNull(jsonNode.get(ANY_OF))) {
+        result = chooseAnyOfDefinition(fieldName, jsonNode, ANY_OF, definitions);
+      } else if (Objects.nonNull(jsonNode.get(ALL_OF))) {
+        result = chooseAnyOfDefinition(fieldName, jsonNode, ALL_OF, definitions);
       } else {
-        result = chooseAnyOfDefinition(fieldName, jsonNode, "oneOf", definitions);
+        result = chooseAnyOfDefinition(fieldName, jsonNode, ONE_OF, definitions);
       }
     } else {
       result = buildDefinitionObjectField(fieldName, jsonNode, definitions);
@@ -154,17 +150,17 @@ public class JSONSchemaParser implements SchemaParser {
   }
 
   private boolean isCombine(JsonNode jsonNode) {
-    return Objects.nonNull(jsonNode.get("anyOf")) ||
-            Objects.nonNull(jsonNode.get("allOf")) ||
-            Objects.nonNull(jsonNode.get("oneOf"));
+    return Objects.nonNull(jsonNode.get(ANY_OF)) ||
+            Objects.nonNull(jsonNode.get(ALL_OF)) ||
+            Objects.nonNull(jsonNode.get(ONE_OF));
   }
 
   private String getSafeType(JsonNode jsonNode) {
     String nodeType;
-    if (jsonNode.findPath("type").isArray()) {
-      nodeType = getNonNUll(jsonNode.findPath("type").elements());
+    if (jsonNode.findPath(TYPE).isArray()) {
+      nodeType = getNonNUll(jsonNode.findPath(TYPE).elements());
     } else {
-      nodeType = jsonNode.findPath("type").textValue().toLowerCase();
+      nodeType = jsonNode.findPath(TYPE).textValue().toLowerCase();
     }
     return nodeType;
   }
@@ -195,8 +191,8 @@ public class JSONSchemaParser implements SchemaParser {
     int optionsNumber = options.size();
     Field resultObject;
     switch (type) {
-      case "anyOf":
-      case "oneOf":
+      case ANY_OF:
+      case ONE_OF:
         resultObject = buildDefinition(fieldName, jsonNode.path(type).get(RandomUtils.nextInt(0, optionsNumber)), definitions);
         break;
       default:
@@ -206,19 +202,15 @@ public class JSONSchemaParser implements SchemaParser {
     return resultObject;
   }
 
-  private Field buildDefinitionArrayField(String fieldName, JsonNode jsonNode, JsonNode definitions) {
-    return buildArrayField(fieldName, jsonNode, buildDefinition(null, jsonNode.path("items"), definitions));
-  }
-
   private Field buildDefinitionObjectField(String fieldName, JsonNode jsonNode, JsonNode definitions) {
     List<Field> properties = new ArrayList<>();
-    if (Objects.nonNull(jsonNode.get("properties"))) {
-      CollectionUtils.collect(jsonNode.path("properties").fields(),
+    if (Objects.nonNull(jsonNode.get(PROPERTIES))) {
+      CollectionUtils.collect(jsonNode.path(PROPERTIES).fields(),
                               field -> buildDefinition(field.getKey(), field.getValue(), definitions), properties);
-      List<String> strRequired = jsonNode.findValuesAsText("required");
+      List<String> strRequired = jsonNode.findValuesAsText(REQUIRED);
       CollectionUtils.filter(strRequired, StringUtils::isNotEmpty);
       return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
-    } else if (Objects.nonNull(jsonNode.get("$ref"))) {
+    } else if (Objects.nonNull(jsonNode.get($_REF))) {
       String referenceName = extractRefName(jsonNode);
       if (definitionsMap.containsKey(referenceName)) {
         return definitionsMap.get(referenceName).cloneField(fieldName);
@@ -236,16 +228,16 @@ public class JSONSchemaParser implements SchemaParser {
   }
 
   private boolean isRefNodeSupported(JsonNode jsonNode) {
-    String reference = jsonNode.get("$ref").asText();
+    String reference = jsonNode.get($_REF).asText();
     return !reference.isEmpty() && reference.startsWith("#");
   }
 
   private boolean isRefNode(JsonNode jsonNode) {
-    return Objects.nonNull(jsonNode.get("$ref"));
+    return Objects.nonNull(jsonNode.get($_REF));
   }
 
   private String extractRefName(JsonNode jsonNode) {
-    String reference = jsonNode.get("$ref").asText();
+    String reference = jsonNode.get($_REF).asText();
     return extractRefName(reference);
   }
 
@@ -258,7 +250,7 @@ public class JSONSchemaParser implements SchemaParser {
     if (isRefNode(jsonNode)) {
       if (isRefNodeSupported(jsonNode)) {
         String referenceName = extractRefName(jsonNode);
-        if ("array".equalsIgnoreCase(jsonNode.findPath("type").textValue())) {
+        if ("array".equalsIgnoreCase(jsonNode.findPath(TYPE).textValue())) {
           result = buildArrayField(fieldName, jsonNode, definitionsMap.get(referenceName).cloneField(null));
         } else {
           result = definitionsMap.get(referenceName).cloneField(fieldName);
@@ -267,34 +259,14 @@ public class JSONSchemaParser implements SchemaParser {
         throw new MLoadGenException(String.format("Reference not Supported: %s", extractRefName(jsonNode)));
       }
     } else if (isAnyType(jsonNode)) {
-      String nodeType = getSafeType(jsonNode).toLowerCase();
-      switch (nodeType) {
-        case "integer":
-          result = IntegerField.builder().name(fieldName).build();
-          break;
-        case "number":
-          result = buildNumberField(fieldName, jsonNode);
-          break;
-        case "array":
-          result = buildArrayField(fieldName, jsonNode);
-          break;
-        case "object":
-          result = buildObjectField(fieldName, jsonNode);
-          break;
-        case "boolean":
-          result = buildBooleanField(fieldName);
-          break;
-        default:
-          result = buildStringField(fieldName, jsonNode);
-          break;
-      }
+      result = buildField(fieldName, jsonNode);
     } else if (isCombine(jsonNode)) {
-      if (Objects.nonNull(jsonNode.get("anyOf"))) {
-        result = chooseAnyOf(fieldName, jsonNode, "anyOf");
-      } else if (Objects.nonNull(jsonNode.get("allOf"))) {
-        result = chooseAnyOf(fieldName, jsonNode, "allOf");
+      if (Objects.nonNull(jsonNode.get(ANY_OF))) {
+        result = chooseAnyOf(fieldName, jsonNode, ANY_OF);
+      } else if (Objects.nonNull(jsonNode.get(ALL_OF))) {
+        result = chooseAnyOf(fieldName, jsonNode, ALL_OF);
       } else {
-        result = chooseAnyOf(fieldName, jsonNode, "oneOf");
+        result = chooseAnyOf(fieldName, jsonNode, ONE_OF);
       }
     } else if (hasProperties(jsonNode)){
       result = buildObjectField(fieldName, jsonNode);
@@ -304,8 +276,34 @@ public class JSONSchemaParser implements SchemaParser {
     return result;
   }
 
+  private Field buildField(String fieldName, JsonNode jsonNode) {
+    Field result;
+    String nodeType = getSafeType(jsonNode).toLowerCase();
+    switch (nodeType) {
+      case "integer":
+        result = IntegerField.builder().name(fieldName).build();
+        break;
+      case "number":
+        result = buildNumberField(fieldName, jsonNode);
+        break;
+      case "array":
+        result = buildArrayField(fieldName, jsonNode);
+        break;
+      case "object":
+        result = buildObjectField(fieldName, jsonNode);
+        break;
+      case "boolean":
+        result = buildBooleanField(fieldName);
+        break;
+      default:
+        result = buildStringField(fieldName, jsonNode);
+        break;
+    }
+    return result;
+  }
+
   private boolean hasProperties(JsonNode jsonNode) {
-    return Objects.nonNull(jsonNode.get("properties"));
+    return Objects.nonNull(jsonNode.get(PROPERTIES));
   }
 
   private Field buildStringField(String fieldName, JsonNode jsonNode) {
@@ -315,8 +313,14 @@ public class JSONSchemaParser implements SchemaParser {
       int minLength = getSafeInt(jsonNode, "minLength");
       int maxLength = getSafeInt(jsonNode, "maxLength");
       String format = getSafeText(jsonNode, "format");
-      if (Set.of("date-time", "time", "date").contains(format)) {
-        result = DateField.builder().name(fieldName).format(format).build();
+      if (Objects.nonNull(format)) {
+        if (Set.of("date-time", "time", "date").contains(format)) {
+          result = DateField.builder().name(fieldName).format(format).build();
+        } else if ("uuid".equals(format)) {
+          result = UUIDField.builder().name(fieldName).build();
+        } else {
+          result = StringField.builder().name(fieldName).format(format).build();
+        }
       } else {
         result = StringField.builder().name(fieldName).regex(regexStr).minLength(minLength).maxlength(maxLength).format(format).build();
       }
@@ -359,23 +363,40 @@ public class JSONSchemaParser implements SchemaParser {
   }
 
   private boolean isAnyType(JsonNode node) {
-    return Objects.nonNull(node.get("type"));
+    return Objects.nonNull(node.get(TYPE));
   }
 
   private Field chooseAnyOf(String fieldName, JsonNode jsonNode, String type) {
     List<JsonNode> properties = IteratorUtils.toList(jsonNode.get(type).elements());
     int optionsNumber = properties.size();
     Field resultObject;
-    switch (type) {
-      case "anyOf":
-      case "oneOf":
-        resultObject = buildCombinedField(fieldName, Collections.singletonList(properties.get(RandomUtils.nextInt(0, optionsNumber))));
-      break;
-      default:
-        resultObject = buildCombinedField(fieldName, properties);
-        break;
+    if (IterableUtils.matchesAll(properties, property -> property.hasNonNull(PROPERTIES))) {
+      switch (type) {
+        case ANY_OF:
+        case ONE_OF:
+          resultObject = buildCombinedField(fieldName, Collections.singletonList(properties.get(RandomUtils.nextInt(0, optionsNumber))));
+          break;
+        default:
+          resultObject = buildCombinedField(fieldName, properties);
+          break;
+      }
+    } else if (IterableUtils.matchesAll(properties, property -> !property.hasNonNull(PROPERTIES))) {
+      switch (type) {
+        case ANY_OF:
+        case ONE_OF:
+          resultObject = buildCombinedType(fieldName, properties.get(RandomUtils.nextInt(0, optionsNumber)));
+          break;
+        default:
+          throw new MLoadGenException("Incorrect type in combination");
+      }
+    } else {
+      throw new MLoadGenException("Incorrect combination, types and properties mixed");
     }
     return resultObject;
+  }
+
+  private Field buildCombinedType(String fieldName, JsonNode property) {
+    return buildField(fieldName, property);
   }
 
   private Field buildCombinedField(String fieldName, List<JsonNode> properties) {
@@ -391,7 +412,7 @@ public class JSONSchemaParser implements SchemaParser {
           fields.addAll(refField.getProperties());
         }
       } else {
-        for (Iterator<Entry<String, JsonNode>> it = property.get("properties").fields(); it.hasNext(); ) {
+        for (Iterator<Entry<String, JsonNode>> it = property.get(PROPERTIES).fields(); it.hasNext(); ) {
           Entry<String, JsonNode> innProperty = it.next();
           fields.add(buildProperty(innProperty.getKey(), innProperty.getValue()));
         }
@@ -447,19 +468,19 @@ public class JSONSchemaParser implements SchemaParser {
 
   private Field buildObjectField(String fieldName, JsonNode jsonNode) {
     List<Field> properties = new ArrayList<>();
-    List<String> strRequired = jsonNode.findValuesAsText("required");
+    List<String> strRequired = jsonNode.findValuesAsText(REQUIRED);
     CollectionUtils.filter(strRequired, StringUtils::isNotEmpty);
     if (!isCombine(jsonNode)) {
-      CollectionUtils.collect(jsonNode.path("properties").fields(), field -> buildProperty(field.getKey(), field.getValue()), properties);
+      CollectionUtils.collect(jsonNode.path(PROPERTIES).fields(), field -> buildProperty(field.getKey(), field.getValue()), properties);
       return ObjectField.builder().name(fieldName).properties(properties).required(strRequired).build();
     } else {
       Field result;
-      if (Objects.nonNull(jsonNode.get("anyOf"))) {
-        result = chooseAnyOf(fieldName, jsonNode, "anyOf");
-      } else if (Objects.nonNull(jsonNode.get("allOf"))) {
-        result = chooseAnyOf(fieldName, jsonNode, "allOf");
+      if (Objects.nonNull(jsonNode.get(ANY_OF))) {
+        result = chooseAnyOf(fieldName, jsonNode, ANY_OF);
+      } else if (Objects.nonNull(jsonNode.get(ALL_OF))) {
+        result = chooseAnyOf(fieldName, jsonNode, ALL_OF);
       } else {
-        result = chooseAnyOf(fieldName, jsonNode, "oneOf");
+        result = chooseAnyOf(fieldName, jsonNode, ONE_OF);
       }
       return result;
     }
