@@ -5,6 +5,7 @@ import static java.util.Collections.singletonList;
 
 import net.coru.mloadgen.model.json.ArrayField;
 import net.coru.mloadgen.model.json.BooleanField;
+import net.coru.mloadgen.model.json.DateField;
 import net.coru.mloadgen.model.json.EnumField;
 import net.coru.mloadgen.model.json.IntegerField;
 import net.coru.mloadgen.model.json.NumberField;
@@ -142,11 +143,11 @@ public class JsonSchemaFixtures {
           .property(ObjectField
               .builder()
               .name("_metadata")
-              .property(StringField.builder().name("createdAt").format("date-time").build())
+              .property(DateField.builder().name("createdAt").format("date-time").build())
               .property(StringField.builder().name("createdBy").build())
-              .property(StringField.builder().name("lastUpdatedAt").format("date-time").build())
+              .property(DateField.builder().name("lastUpdatedAt").format("date-time").build())
               .property(StringField.builder().name("lastUpdatedBy").build())
-              .property(StringField.builder().name("deletedAt").format("date-time").build())
+              .property(DateField.builder().name("deletedAt").format("date-time").build())
               .property(StringField.builder().name("projectVersion").build())
               .property(StringField.builder().name("projectName").build())
               .property(StringField.builder().name("deletedBy").build())

@@ -14,6 +14,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.SneakyThrows;
@@ -26,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class JsonSchemaProcessor {
 
-  private static ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   private List<FieldValueMapping> fieldExprMappings;
 

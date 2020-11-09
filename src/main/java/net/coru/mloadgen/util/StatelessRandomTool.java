@@ -18,20 +18,6 @@ public class StatelessRandomTool {
 
   private final Map<String, Object> context = new HashMap<>();
 
-  public Object generateRandomMap(String fieldType, Integer valueLength, List<String> fieldValuesList, Integer size,
-      Map<ConstraintTypeEnum, String> constrains) {
-
-    List<String> parameterList = new ArrayList<>(fieldValuesList);
-    parameterList.replaceAll(fieldValue ->
-                                     fieldValue.matches("\\$\\{\\w*}") ?
-                                             JMeterContextService.getContext().getVariables().get(fieldValue.substring(2, fieldValue.length() - 1)) :
-                                             fieldValue
-    );
-
-    return RandomTool.generateRandomMap(fieldType, valueLength, parameterList, size, constrains);
-
-  }
-
   public Object generateRandom(String fieldName, String fieldType, Integer valueLength, List<String> fieldValuesList,
       Map<ConstraintTypeEnum, String> constrains) {
     List<String> parameterList = new ArrayList<>(fieldValuesList);
@@ -49,6 +35,20 @@ public class StatelessRandomTool {
     return value;
   }
 
+  public Object generateRandomMap(String fieldType, Integer valueLength, List<String> fieldValuesList, Integer size,
+      Map<ConstraintTypeEnum, String> constrains) {
+
+    List<String> parameterList = new ArrayList<>(fieldValuesList);
+    parameterList.replaceAll(fieldValue ->
+                                     fieldValue.matches("\\$\\{\\w*}") ?
+                                             JMeterContextService.getContext().getVariables().get(fieldValue.substring(2, fieldValue.length() - 1)) :
+                                             fieldValue
+    );
+
+    return RandomTool.generateRandomMap(fieldType, valueLength, parameterList, size, constrains);
+
+  }
+
   public Object generateRandomArray(String fieldName, String fieldType, Integer arraySize, Integer valueLength,
       List<String> fieldValuesList, Map<ConstraintTypeEnum, String> constrains) {
     List<String> parameterList = new ArrayList<>(fieldValuesList);
@@ -58,7 +58,7 @@ public class StatelessRandomTool {
                     fieldValue
     );
 
-    Object value = RandomTool.generateArray(fieldType, valueLength, parameterList, arraySize, constrains);
+    Object value = RandomTool.generateRandomArray(fieldType, valueLength, parameterList, arraySize, constrains);
     if ("seq".equals(fieldType)) {
       value = RandomTool.generateSeq(fieldName, fieldType, parameterList, context);
     }

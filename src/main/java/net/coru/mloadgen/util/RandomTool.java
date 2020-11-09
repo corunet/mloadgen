@@ -57,12 +57,12 @@ public final class RandomTool {
         break;
     }
     if (fieldType.endsWith("array")) {
-      value = generateMapArray(fieldType, mapSize, fieldValueList, arraySize, constrains);
+      value = generateRandomMapArray(fieldType, mapSize, fieldValueList, arraySize, constrains);
     }
     return value;
   }
 
-  protected static Object generateMapArray(String type, Integer valueLength, List<String> fieldValueList, Integer arraySize,
+  protected static Object generateRandomMapArray(String type, Integer valueLength, List<String> fieldValueList, Integer arraySize,
       Map<ConstraintTypeEnum, String> constrains) {
     List<Map<String, Object>> generatedMapArray = new ArrayList<>(valueLength);
     for (int i = 0; i < arraySize; i++) {
@@ -72,7 +72,7 @@ public final class RandomTool {
     return generatedMapArray;
   }
 
-  protected static Object generateArray(String fieldType, Integer valueLength, List<String> fieldValueList, Integer arraySize,
+  protected static Object generateRandomArray(String fieldType, Integer valueLength, List<String> fieldValueList, Integer arraySize,
       Map<ConstraintTypeEnum, String> constrains) {
     Object value;
     switch (fieldType) {
@@ -549,8 +549,7 @@ public final class RandomTool {
         }
       } else {
         value = RandomStringUtils.randomAlphabetic(valueLength == 0 ? RandomUtils.nextInt(1, 20) : valueLength);
-      }
-    }
+      }    }
     return value;
   }
 
