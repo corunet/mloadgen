@@ -14,16 +14,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.SneakyThrows;
 import net.coru.mloadgen.exception.MLoadGenException;
-import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.ConstraintTypeEnum;
+import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.util.StatelessRandomTool;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +38,7 @@ public class JsonSchemaProcessor {
   }
 
   @SneakyThrows
-  public String next() {
+  public ObjectNode next() {
     ObjectNode entity = JsonNodeFactory.instance.objectNode();
     if (!fieldExprMappings.isEmpty()) {
       ArrayDeque<FieldValueMapping> fieldExpMappingsQueue = new ArrayDeque<>(fieldExprMappings);
@@ -102,7 +98,7 @@ public class JsonSchemaProcessor {
         }
       }
     }
-    return entity.toString();
+    return entity;
   }
 
   private ObjectNode createObject(final String fieldName, final ArrayDeque<FieldValueMapping> fieldExpMappingsQueue) {
