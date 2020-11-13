@@ -145,7 +145,7 @@ public class SchemaExtractorImpl implements SchemaExtractor {
       addConstraint(builder, FORMAT, ((StringField) innerField).getFormat());
 
       completeFieldList.add(builder.build());
-    } if (innerField instanceof DateField) {
+    } else if (innerField instanceof DateField) {
       completeFieldList.add(FieldValueMapping.builder().fieldType(innerField.getType()).fieldName(innerField.getName()).build());
     } else {
       completeFieldList.add(FieldValueMapping.builder().fieldName(innerField.getName()).fieldType(innerField.getType()).build());
