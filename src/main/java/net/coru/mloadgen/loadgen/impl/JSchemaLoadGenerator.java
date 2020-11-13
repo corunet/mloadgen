@@ -9,9 +9,9 @@ package net.coru.mloadgen.loadgen.impl;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.loadgen.BaseLoadGenerator;
 import net.coru.mloadgen.model.FieldValueMapping;
-import net.coru.mloadgen.exception.MLoadGenException;
 import net.coru.mloadgen.processor.JsonSchemaProcessor;
 
 @Slf4j
@@ -42,7 +42,7 @@ public class JSchemaLoadGenerator implements BaseLoadGenerator {
   }
 
   public String nextMessage() {
-    return avroSchemaProcessor.next();
+    return avroSchemaProcessor.next().toString();
   }
 
 }

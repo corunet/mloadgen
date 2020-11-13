@@ -14,16 +14,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.SneakyThrows;
 import net.coru.mloadgen.exception.MLoadGenException;
-import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.model.ConstraintTypeEnum;
+import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.util.StatelessRandomTool;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +38,7 @@ public class JsonSchemaProcessor {
   }
 
   @SneakyThrows
-  public String next() {
+  public ObjectNode next() {
     ObjectNode entity = JsonNodeFactory.instance.objectNode();
     if (!fieldExprMappings.isEmpty()) {
       ArrayDeque<FieldValueMapping> fieldExpMappingsQueue = new ArrayDeque<>(fieldExprMappings);
@@ -102,11 +98,10 @@ public class JsonSchemaProcessor {
         }
       }
     }
-    return entity.toString();
+    return entity;
   }
 
-  private ObjectNode createObject(final String fieldName, final ArrayDeque<FieldValueMapping> fieldExpMappingsQueue)
-          throws MLoadGenException {
+  private ObjectNode createObject(final String fieldName, final ArrayDeque<FieldValueMapping> fieldExpMappingsQueue) {
     ObjectNode subEntity = JsonNodeFactory.instance.objectNode();
     if (null == subEntity) {
       throw new MLoadGenException("Something Odd just happened");
@@ -194,8 +189,7 @@ public class JsonSchemaProcessor {
     return fieldType.contains("-");
   }
 
-  private List<ObjectNode> createObjectArray(String fieldName, Integer arraySize, ArrayDeque<FieldValueMapping> fieldExpMappingsQueue)
-      throws MLoadGenException {
+  private List<ObjectNode> createObjectArray(String fieldName, Integer arraySize, ArrayDeque<FieldValueMapping> fieldExpMappingsQueue) {
     List<ObjectNode> objectArray = new ArrayList<>(arraySize);
     for(int i=0; i<arraySize-1; i++) {
       ArrayDeque<FieldValueMapping> temporalQueue = fieldExpMappingsQueue.clone();
@@ -206,14 +200,12 @@ public class JsonSchemaProcessor {
   }
 
   private Object createBasicMap(String fieldType, Integer arraySize, List<String> fieldExpMappings,
-      Map<ConstraintTypeEnum, String> constrains)
-  throws MLoadGenException {
+      Map<ConstraintTypeEnum, String> constrains) {
     return randomToolJson.generateRandomMap(fieldType, arraySize, fieldExpMappings, arraySize, constrains);
   }
 
   private Object createObjectMapArray(String fieldType, Integer arraySize, Integer mapSize, List<String> fieldExpMappings,
-      Map<ConstraintTypeEnum, String> constrains)
-      throws MLoadGenException {
+      Map<ConstraintTypeEnum, String> constrains) {
     return randomToolJson.generateRandomMap(fieldType, mapSize, fieldExpMappings, arraySize, constrains);
   }
 

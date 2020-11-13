@@ -14,7 +14,6 @@ import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PORT;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
-import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
 import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
 
 import com.mongodb.BasicDBObject;
@@ -26,17 +25,14 @@ import com.mongodb.MongoSecurityException;
 import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;
@@ -104,7 +100,6 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
       }
 
       List<FieldValueMapping> schemaProperties = (List<FieldValueMapping>) context.getJMeterVariables().getObject(SCHEMA_PROPERTIES);
-      String jsonSchema = context.getJMeterVariables().get(JSON_SCHEMA);
       processor.processSchema(schemaProperties);
     }
     super.setupTest(context);
@@ -123,7 +118,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
     try {
 
-      String document = processor.next();
+      String document = processor.next().toString();
       String result;
       if (INSERT_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
         sampleResult.setSamplerData(document);
@@ -168,29 +163,11 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
     return document;
   }
 
-  private String runQueryCommand(String collection, String filter) {
-    BasicDBObject mongoQuery = BasicDBObject.parse(filter);
-
-    StringBuilder resultSB = new StringBuilder();
-    FindIterable<Document> response = database.getCollection(collection).find(mongoQuery);
-    response.forEach((Consumer<? super Document>) resDoc -> resultSB.append(resDoc.toJson()));
-
-    return resultSB.toString();
-  }
-
   private String runUpdateCommand(String collection, String filter,  String document) {
     BasicDBObject mongoFilter = BasicDBObject.parse(filter);
     Document mongoDocument = Document.parse(document);
 
     UpdateResult response = database.getCollection(collection).updateOne(mongoFilter, mongoDocument);
-
-    return response.toString();
-  }
-
-  private String runDeleteCommand(String collection, String filter) {
-    BasicDBObject mongoFilter = BasicDBObject.parse(filter);
-
-    DeleteResult response = database.getCollection(collection).deleteMany(mongoFilter);
 
     return response.toString();
   }
