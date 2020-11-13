@@ -370,7 +370,8 @@ public class JSONSchemaParser implements SchemaParser {
     List<JsonNode> properties = IteratorUtils.toList(jsonNode.get(type).elements());
     int optionsNumber = properties.size();
     Field resultObject;
-    if (IterableUtils.matchesAll(properties, property -> property.hasNonNull(PROPERTIES))) {
+    if (IterableUtils.matchesAll(properties, property -> property.hasNonNull(PROPERTIES)
+            || property.hasNonNull("$ref"))) {
       switch (type) {
         case ANY_OF:
         case ONE_OF:
@@ -380,7 +381,8 @@ public class JSONSchemaParser implements SchemaParser {
           resultObject = buildCombinedField(fieldName, properties);
           break;
       }
-    } else if (IterableUtils.matchesAll(properties, property -> !property.hasNonNull(PROPERTIES))) {
+    } else if (IterableUtils.matchesAll(properties, property -> !property.hasNonNull(PROPERTIES)
+            && !property.hasNonNull("$ref"))) {
       switch (type) {
         case ANY_OF:
         case ONE_OF:
