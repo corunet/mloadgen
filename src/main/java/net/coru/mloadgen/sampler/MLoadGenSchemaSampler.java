@@ -12,6 +12,7 @@ import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_HOSTNAME;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PASSWORD;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PORT;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_URL;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
 import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
 import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
@@ -33,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import net.coru.mloadgen.model.FieldValueMapping;
 import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;
@@ -59,6 +61,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
     defaultParameters.addArgument(MONGODB_PORT, "27017");
     defaultParameters.addArgument(MONGODB_USERNAME, "<username>");
     defaultParameters.addArgument(MONGODB_PASSWORD, "<password>");
+    defaultParameters.addArgument(MONGODB_URL, "<mongo url>");
     defaultParameters.addArgument(DBNAME, "<dbname>");
     defaultParameters.addArgument(OPERATION, "insert");
     return defaultParameters;
@@ -73,6 +76,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
       final int port = Integer.parseInt(context.getParameter(MONGODB_PORT));
       String dbName = context.getParameter(DBNAME);
       String username = context.getParameter(MONGODB_USERNAME);
+      String url = context.getParameter(MONGODB_URL);
       char[] password = context.getParameter(MONGODB_PASSWORD).toCharArray();
 
       MongoCredential credential = MongoCredential.createCredential(username, dbName, password);
@@ -82,7 +86,7 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
               builder.hosts(Collections.singletonList( new ServerAddress(hostname, port))).build())
           .build();
 
-      mongoClient = MongoClients.create(settings);
+      mongoClient = mongoUrlValidation(url)? MongoClients.create(url) : MongoClients.create(settings);
 
       String collection = context.getJMeterVariables().get(COLLECTION);
       database = mongoClient.getDatabase(dbName);
@@ -170,5 +174,15 @@ public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
     UpdateResult response = database.getCollection(collection).updateOne(mongoFilter, mongoDocument);
 
     return response.toString();
+  }
+
+  private Boolean mongoUrlValidation(String mongoUrl) {
+    if(mongoUrl.isEmpty() || Objects.isNull(mongoUrl) || mongoUrl.equals("<mongo url>"))
+    {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

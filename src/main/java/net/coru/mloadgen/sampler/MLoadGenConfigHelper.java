@@ -14,6 +14,8 @@ public interface MLoadGenConfigHelper {
 
    String MONGODB_PASSWORD = "password";
 
+   String MONGODB_URL = "url";
+
    String DBNAME = "dbname";
 
    String OPERATION = "operation";
