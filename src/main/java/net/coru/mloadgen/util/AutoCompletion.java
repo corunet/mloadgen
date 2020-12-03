@@ -1,9 +1,18 @@
 package net.coru.mloadgen.util;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import net.coru.mloadgen.exception.MLoadGenException;
 
@@ -50,19 +59,19 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
       }
     });
     editorKeyListener = new java.awt.event.KeyAdapter() {
-      public void keyPressed(java.awt.event.KeyEvent e) {
+      public void keyPressed(KeyEvent e) {
         if (comboBox.isDisplayable()) {
           comboBox.setPopupVisible(true);
         }
         hitBackspace = false;
         switch (e.getKeyCode()) {
           // determine if the pressed key is backspace (needed by the remove method)
-          case java.awt.event.KeyEvent.VK_BACK_SPACE:
+          case KeyEvent.VK_BACK_SPACE:
             hitBackspace = true;
             hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
             break;
           // ignore delete key
-          case java.awt.event.KeyEvent.VK_DELETE:
+          case KeyEvent.VK_DELETE:
             e.consume();
             comboBox.getToolkit().beep();
             break;
@@ -74,12 +83,12 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
     hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
-    editorFocusListener = new java.awt.event.FocusAdapter() {
-      public void focusGained(java.awt.event.FocusEvent e) {
+    editorFocusListener = new FocusAdapter() {
+      public void focusGained(FocusEvent e) {
         highlightCompletedText(0);
       }
 
-      public void focusLost(java.awt.event.FocusEvent e) {
+      public void focusLost(FocusEvent e) {
         // Workaround for Bug 5100422 - Hide Popup on focus loss
         if (hidePopupOnFocusLoss) {
           comboBox.setPopupVisible(false);
@@ -95,28 +104,28 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
     highlightCompletedText(0);
   }
 
-  public static void enable(javax.swing.JComboBox<String> comboBox) {
+  public static void enable(JComboBox<String> comboBox) {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
     new net.coru.mloadgen.util.AutoCompletion(comboBox);
   }
 
-  private void configureEditor(javax.swing.ComboBoxEditor newEditor) {
+  private void configureEditor(ComboBoxEditor newEditor) {
     if (editor != null) {
       editor.removeKeyListener(editorKeyListener);
       editor.removeFocusListener(editorFocusListener);
     }
 
     if (newEditor != null) {
-      editor = (javax.swing.text.JTextComponent) newEditor.getEditorComponent();
+      editor = (JTextComponent) newEditor.getEditorComponent();
       editor.addKeyListener(editorKeyListener);
       editor.addFocusListener(editorFocusListener);
       editor.setDocument(this);
     }
   }
 
-  public void remove(int offs, int len) throws javax.swing.text.BadLocationException {
+  public void remove(int offs, int len) throws BadLocationException {
     // return immediately when selecting an item
     int editOffs = offs;
     if (selecting) {
@@ -139,7 +148,7 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
     }
   }
 
-  public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+  public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
     // return immediately when selecting an item
     int editOffs = offs;
     if (selecting) {
@@ -211,19 +220,19 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
 
   private static void createAndShowGUI() {
     // the combo box (add/modify items if you like to)
-    final javax.swing.JComboBox<String> comboBox = new javax.swing.JComboBox<>(new String[]{"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
+    final JComboBox<String> comboBox = new JComboBox<>(new String[]{"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
     enable(comboBox);
 
     // create and show a window containing the combo box
-    final javax.swing.JFrame frame = new javax.swing.JFrame();
-    frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    final JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.getContentPane().add(comboBox);
     frame.pack();
     frame.setVisible(true);
   }
 
   public static void main(String[] args) {
-    javax.swing.SwingUtilities.invokeLater(() -> createAndShowGUI());
+    SwingUtilities.invokeLater(() -> createAndShowGUI());
   }
 }
 
