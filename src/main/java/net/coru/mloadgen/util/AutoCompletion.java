@@ -52,7 +52,7 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
     });
     comboBox.addPropertyChangeListener(e -> {
       if (e.getPropertyName().equals("editor")) {
-        configureEditor((javax.swing.ComboBoxEditor) e.getNewValue());
+        configureEditor((ComboBoxEditor) e.getNewValue());
       }
       if (e.getPropertyName().equals("model")) {
         model = (ComboBoxModel) e.getNewValue();
@@ -178,7 +178,7 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
       // remove all text and insert the completed string
       super.remove(0, getLength());
       super.insertString(0, text, null);
-    } catch (javax.swing.text.BadLocationException e) {
+    } catch (BadLocationException e) {
       throw new MLoadGenException(e.toString());
     }
   }
