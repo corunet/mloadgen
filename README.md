@@ -84,10 +84,10 @@ This component allows to upload a Json Schema, or a JSchema, file to generate th
 
 We will see 4 columns where we will configure the Random Generator system.
 
-  * **Field Name** : Flattened field name compose by all the properties from the root class. Ex: PropClass1.PropClass2.ProrpClass3 **Note**: In case to be an array [] will appear at the end. If you want to define a specific size for the array just type the number.
-  * **Field Type** : Field type, like String, Int, Double, Array **Note** : if the field is an array of basic types it will be show as string-array, int-array,...
-  * **Field Length** : Field length configuration for the Random Tool. In case of an String mean the number of characters, in case of a Number the number of digits.
-  * **Field Values List** : Field possibles values which will be used by the Random Tool to generate values.
+* **Field Name** : Flattened field name compose by all the properties from the root class. Ex: PropClass1.PropClass2.ProrpClass3 **Note**: In case to be an array [] will appear at the end. If you want to define a specific size for the array just type the number.
+* **Field Type** : Field type, like String, Int, Double, Array **Note** : if the field is an array of basic types it will be show as string-array, int-array,...
+* **Field Length** : Field length configuration for the Random Tool. In case of an String mean the number of characters, in case of a Number the number of digits.
+* **Field Values List** : Field possibles values which will be used by the Random Tool to generate values.
 
  **Note** In "Field Type" if the field type is an array or a map you can define a specific number of random values(metadata.extensions.flows[].correlation[2]).
               In "Field Values List" if the field type is an array or a map you can define a specific list of values([1,2,3,4,5] or [ key1:value1, key2:value2, key3:value3]).
@@ -95,6 +95,7 @@ We will see 4 columns where we will configure the Random Generator system.
 ![Load Generator Table](/File_Load_Generator_Config.png)
 
 ### MLoadGen Schema Sampler
+
 Java Sampler who manage the connection against the mongo cluster and data injection.
 
 * **hostname** : Mongodb server hort name or Master server in a Mongo Cluster.
@@ -105,6 +106,3 @@ Java Sampler who manage the connection against the mongo cluster and data inject
 * **operation** : Operation to execute insert/update.
 
 ![MLoadGen Schema Sampler](/Java_Request_-_MLoadGen_Gen_Schema_Sampler.png)
-
-
-
