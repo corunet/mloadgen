@@ -1,8 +1,7 @@
 # MLoadGen - JSON Schema/JSchema + Mongo Load Generator
 
-[![Build Status](https://api.travis-ci.org/corunet/mloadgen.svg?branch=master)](https://travis-ci.org/corunet/mloadgen)
-
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/556dc69dff5643ad855a7323c8442876)](https://app.codacy.com/gh/corunet/mloadgen?utm_source=github.com&utm_medium=referral&utm_content=corunet/mloadgen&utm_campaign=Badge_Grade)
+[![Build Status](https://api.travis-ci.org/corunet/mloadgen.svg?branch=master)](https://travis-ci.org/corunet/mloadgen)
 
 ---
 
