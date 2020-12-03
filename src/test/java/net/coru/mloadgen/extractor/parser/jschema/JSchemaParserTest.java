@@ -1,11 +1,11 @@
 package net.coru.mloadgen.extractor.parser.jschema;
 
-import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixtures.MEDIUM_ARRAY_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixtures.MEDIUM_ENUM_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixtures.MEDIUM_MAP_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixtures.MEDIUM_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixturesConsants.MEDIUM_ARRAY_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixturesConsants.MEDIUM_ENUM_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixturesConsants.MEDIUM_MAP_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixturesConsants.MEDIUM_SCHEMA;
 import static org.assertj.core.api.Assertions.assertThat;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixtures.SIMPLE_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JSchemaFixturesConsants.SIMPLE_SCHEMA;
 
 import java.util.stream.Stream;
 import net.coru.mloadgen.extractor.parser.util.ResourceAsFile;

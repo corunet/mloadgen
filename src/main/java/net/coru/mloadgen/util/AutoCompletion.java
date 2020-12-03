@@ -1,6 +1,10 @@
 package net.coru.mloadgen.util;
 
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.text.JTextComponent;
 import net.coru.mloadgen.exception.MLoadGenException;
 
 /* This work is hereby released into the Public Domain.
@@ -9,11 +13,11 @@ import net.coru.mloadgen.exception.MLoadGenException;
  */
 public class AutoCompletion extends javax.swing.text.PlainDocument {
 
-  private final javax.swing.JComboBox<String> comboBox;
+  private final JComboBox<String> comboBox;
 
-  private transient javax.swing.ComboBoxModel<String> model;
+  private transient ComboBoxModel<String> model;
 
-  private javax.swing.text.JTextComponent editor;
+  private JTextComponent editor;
 
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
@@ -25,11 +29,11 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
 
   private boolean hitBackspaceOnSelection;
 
-  private final transient java.awt.event.KeyListener editorKeyListener;
+  private final transient KeyListener editorKeyListener;
 
-  private final transient java.awt.event.FocusListener editorFocusListener;
+  private final transient FocusListener editorFocusListener;
 
-  public AutoCompletion(final javax.swing.JComboBox<String> comboBox) {
+  public AutoCompletion(final JComboBox<String> comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
     comboBox.addActionListener(e -> {

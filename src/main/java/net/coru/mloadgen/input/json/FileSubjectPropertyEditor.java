@@ -52,7 +52,7 @@ public class FileSubjectPropertyEditor extends PropertyEditorSupport implements 
 
   private final SchemaExtractor schemaExtractor = new SchemaExtractorImpl();
 
-  private java.util.List<Schema> parserSchemaList;
+  private List<Schema> parserSchemaList;
 
   private final JButton openFileDialogButton = new JButton(JMeterUtils.getResString("file_visualizer_open"));
 

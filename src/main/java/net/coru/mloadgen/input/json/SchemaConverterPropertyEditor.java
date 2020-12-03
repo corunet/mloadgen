@@ -46,7 +46,9 @@ public class SchemaConverterPropertyEditor extends PropertyEditorSupport impleme
   }
 
   @Override
-  public void clearGui() { }
+  public void clearGui() {
+    // Not implementation required
+  }
 
   @Override
   public Component getCustomEditor() {

@@ -6,12 +6,12 @@
 
 package net.coru.mloadgen.processor;
 
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_MEDIUM_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_MEDIUM_MAP_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.DEFINED_SIMPLE_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_MEDIUM_ENUM_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_MEDIUM_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_MEDIUM_MAP_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.DEFINED_SIMPLE_FIELD_VALUE_MAPPING;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import java.util.List;

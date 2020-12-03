@@ -16,7 +16,7 @@ import net.coru.mloadgen.model.json.Schema;
 import net.coru.mloadgen.model.json.StringField;
 import net.coru.mloadgen.model.ConstraintTypeEnum;
 
-public class Fixtures {
+public class FixturesConstants {
 
   private final static Map<ConstraintTypeEnum, String> STRING_DEFAULTS = Map.of(
       ConstraintTypeEnum.MAXIMUM_VALUE, "0",

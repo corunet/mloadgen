@@ -1,10 +1,10 @@
 package net.coru.mloadgen.extractor.parser.jschema;
 
-import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixtures.COMPLEX_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixtures.MEDIUM_COMPLEX_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixtures.SIMPLE_SCHEMA;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixtures.SIMPLE_SCHEMA_ARRAY;
-import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixtures.SIMPLE_SCHEMA_NUMBER;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixturesConstants.COMPLEX_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixturesConstants.MEDIUM_COMPLEX_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixturesConstants.SIMPLE_SCHEMA;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixturesConstants.SIMPLE_SCHEMA_ARRAY;
+import static net.coru.mloadgen.extractor.parser.jschema.data.JsonSchemaFixturesConstants.SIMPLE_SCHEMA_NUMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

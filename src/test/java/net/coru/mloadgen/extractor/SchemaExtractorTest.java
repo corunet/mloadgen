@@ -14,18 +14,18 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.util.Collections.singletonList;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_MEDIUM_ENUM_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_MEDIUM_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_MEDIUM_MAP_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.EXPECTED_SIMPLE_FIELD_VALUE_MAPPING;
-import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_ARRAY_SCHEMA;
-import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_ENUM_SCHEMA;
-import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_MAP_SCHEMA;
-import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_SCHEMA;
-import static net.coru.mloadgen.extractor.data.Fixtures.MEDIUM_SIMPLE_ARRAY_SCHEMA;
-import static net.coru.mloadgen.extractor.data.Fixtures.SIMPLE_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_MEDIUM_ARRAY_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_MEDIUM_ENUM_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_MEDIUM_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_MEDIUM_MAP_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_MEDIUM_SIMPLE_ARRAY_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.EXPECTED_SIMPLE_FIELD_VALUE_MAPPING;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.MEDIUM_ARRAY_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.MEDIUM_ENUM_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.MEDIUM_MAP_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.MEDIUM_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.MEDIUM_SIMPLE_ARRAY_SCHEMA;
+import static net.coru.mloadgen.extractor.data.FixturesConstants.SIMPLE_SCHEMA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SchemaExtractorTest {
@@ -47,7 +47,7 @@ class SchemaExtractorTest {
 
   @MethodSource("parametersForFlatPropertiesList")
   @ParameterizedTest
-  void should_flatPropertiesList_ReturnListFieldValueMapping(Schema schema, List<FieldValueMapping> expected) {
+  void shouldFlatPropertiesListReturnListFieldValueMapping(Schema schema, List<FieldValueMapping> expected) {
     List<FieldValueMapping> result = schemaExtractor.flatPropertiesList(schema);
     assertThat(result).hasSameElementsAs(expected);
   }
@@ -64,7 +64,7 @@ class SchemaExtractorTest {
 
   @MethodSource("parametersForSchemaTypesList")
   @ParameterizedTest
-  void should_schemaTypesList_ReturnAListOfSchemas(String schemaType, File schemaFile, List<Schema> expected) throws IOException {
+  void shouldSchemaTypesListReturnAListOfSchemas(String schemaType, File schemaFile, List<Schema> expected) throws IOException {
 
     List<Schema> result = schemaExtractor.schemaTypesList(schemaType, schemaFile);
     assertThat(result).hasSameElementsAs(expected);
@@ -83,7 +83,7 @@ class SchemaExtractorTest {
 
   @MethodSource("parametersForProcessSchema")
   @ParameterizedTest
-  void should_processSchema(Schema schema, List<FieldValueMapping> expected) {
+  void shouldProcessSchema(Schema schema, List<FieldValueMapping> expected) {
     List<FieldValueMapping> result = schemaExtractor.processSchema(schema);
     assertThat(result).hasSameElementsAs(expected);
 

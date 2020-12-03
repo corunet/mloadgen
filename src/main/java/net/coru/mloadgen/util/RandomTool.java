@@ -425,7 +425,7 @@ public final class RandomTool {
     if (!fieldValueList.isEmpty()) {
       value = Integer.parseInt(fieldValueList.get(RandomUtils.nextInt(0, fieldValueList.size())).trim());
     } else {
-      int minimum = calculateMinimum(1, constrains);
+      int minimum = calculateMinimum(constrains);
       int maximum = calculateMaximum(valueLength, constrains);
       if (constrains.containsKey(ConstraintTypeEnum.MULTIPLE_OF)) {
         int multipleOf = Integer.parseInt(constrains.get(ConstraintTypeEnum.MULTIPLE_OF));
@@ -449,7 +449,7 @@ public final class RandomTool {
         value = Integer.parseInt(chosenValue);
       }
     } else {
-      int minimum = calculateMinimum(1, constrains);
+      int minimum = calculateMinimum(constrains);
       int maximum = calculateMaximum(valueLength, constrains);
       if (constrains.containsKey(ConstraintTypeEnum.MULTIPLE_OF)) {
         int multipleOf = Integer.parseInt(constrains.get(ConstraintTypeEnum.MULTIPLE_OF));
@@ -468,7 +468,7 @@ public final class RandomTool {
     if (!fieldValueList.isEmpty()) {
       value = Long.parseLong(fieldValueList.get(RandomUtils.nextInt(0, fieldValueList.size())).trim());
     } else {
-      int minimum = calculateMinimum(1, constrains);
+      int minimum = calculateMinimum(constrains);
       int maximum = calculateMaximum(valueLength, constrains);
       if (constrains.containsKey(ConstraintTypeEnum.MULTIPLE_OF)) {
         int multipleOf = Integer.parseInt(constrains.get(ConstraintTypeEnum.MULTIPLE_OF));
@@ -487,7 +487,7 @@ public final class RandomTool {
     if (!fieldValueList.isEmpty()) {
       value = Double.parseDouble(fieldValueList.get(RandomUtils.nextInt(0, fieldValueList.size())).trim());
     } else {
-      int minimum = calculateMinimum(1, constrains);
+      int minimum = calculateMinimum(constrains);
       int maximum = calculateMaximum(valueLength, constrains);
       if (constrains.containsKey(ConstraintTypeEnum.MULTIPLE_OF)) {
         int multipleOf = Integer.parseInt(constrains.get(ConstraintTypeEnum.MULTIPLE_OF));
@@ -514,7 +514,8 @@ public final class RandomTool {
     return maximum;
   }
 
-  private static int calculateMinimum(int minimum, Map<ConstraintTypeEnum, String> constrains) {
+  private static int calculateMinimum(Map<ConstraintTypeEnum, String> constrains) {
+    int minimum = 1;
     if (constrains.containsKey(ConstraintTypeEnum.MINIMUM_VALUE)) {
       if (constrains.containsKey(ConstraintTypeEnum.EXCLUDED_MINIMUM_VALUE)) {
         minimum = Integer.parseInt(constrains.get(ConstraintTypeEnum.EXCLUDED_MINIMUM_VALUE)) - 1;
@@ -568,7 +569,7 @@ public final class RandomTool {
       value = Short.parseShort(fieldValueList.get(RandomUtils.nextInt(0, fieldValueList.size())).trim());
     } else {
       if (valueLength < 5 ) {
-        int minimum = calculateMinimum(1, constrains);
+        int minimum = calculateMinimum(constrains);
         int maximum = calculateMaximum(valueLength, constrains);
         if (constrains.containsKey(ConstraintTypeEnum.MULTIPLE_OF)) {
           int multipleOf = Integer.parseInt(constrains.get(ConstraintTypeEnum.MULTIPLE_OF));

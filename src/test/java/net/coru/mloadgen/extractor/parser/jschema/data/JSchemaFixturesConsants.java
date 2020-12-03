@@ -12,7 +12,8 @@ import net.coru.mloadgen.model.json.StringField;
 
 import static java.util.Arrays.asList;
 
-public class JSchemaFixtures {
+public class JSchemaFixturesConsants {
+
   public static final Schema SIMPLE_SCHEMA =
     Schema
       .builder()
