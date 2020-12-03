@@ -61,14 +61,14 @@ The latest available, and tested, when this Readme was wrote was the 3.12.7 you 
 
 ### MLoadGenSampler
 
-  * **hostname** : Mongodb server hort name or Master server in a Mongo Cluster.
-  * **port** : Mongodb server port.
-  * **username** : User name allowed to insert documents.
-  * **password** : Password for the account.
-  * **dbname** : Data base name where collection is.
-  * **operation** : Operation to execute insert/update/delete/query.
-  * **collection** : Collection where we want to insert documents.
-  * **document** : Document in JSON format we want to insert.
+  *  **hostname** : Mongodb server hort name or Master server in a Mongo Cluster.
+  *  **port** : Mongodb server port.
+  *  **username** : User name allowed to insert documents.
+  *  **password** : Password for the account.
+  *  **dbname** : Data base name where collection is.
+  *  **operation** : Operation to execute insert/update/delete/query.
+  *  **collection** : Collection where we want to insert documents.
+  *  **document** : Document in JSON format we want to insert.
 
 Document will be converted into BSON Document and inserted in the collection. The collection name is beaing validated, if it is not in the server, the collection will not be created. Just to avoid duplicated collections and missdirections.
 
@@ -78,16 +78,16 @@ Document will be converted into BSON Document and inserted in the collection. Th
 
 This component allows to upload a Json Schema, or a JSchema, file to generate the artificial data to inject in the Mongo DB.
 
-  * **Collection name** : Name of the Collection where the data will be inserted
-  * **Schema Type** : Type of the schema to process, JSchema or JSON Schema
-  * **Field Value Table** : Table which contains the flattened structure of the schema plus the values to configure the generation.
+  *  **Collection name** : Name of the Collection where the data will be inserted
+  *  **Schema Type** : Type of the schema to process, JSchema or JSON Schema
+  *  **Field Value Table** : Table which contains the flattened structure of the schema plus the values to configure the generation.
 
 We will see 4 columns where we will configure the Random Generator system.
 
-  * **Field Name** : Flattened field name compose by all the properties from the root class. Ex: PropClass1.PropClass2.ProrpClass3 **Note**: In case to be an array [] will appear at the end. If you want to define a specific size for the array just type the number.
-  * **Field Type** : Field type, like String, Int, Double, Array **Note** : if the field is an array of basic types it will be show as string-array, int-array,...
-  * **Field Length** : Field length configuration for the Random Tool. In case of an String mean the number of characters, in case of a Number the number of digits.
-  * **Field Values List** : Field possibles values which will be used by the Random Tool to generate values.
+  *  **Field Name** : Flattened field name compose by all the properties from the root class. Ex: PropClass1.PropClass2.ProrpClass3 **Note**: In case to be an array [] will appear at the end. If you want to define a specific size for the array just type the number.
+  *  **Field Type** : Field type, like String, Int, Double, Array **Note** : if the field is an array of basic types it will be show as string-array, int-array,...
+  *  **Field Length** : Field length configuration for the Random Tool. In case of an String mean the number of characters, in case of a Number the number of digits.
+  *  **Field Values List** : Field possibles values which will be used by the Random Tool to generate values.
 
  **Note** In "Field Type" if the field type is an array or a map you can define a specific number of random values(metadata.extensions.flows[].correlation[2]).
               In "Field Values List" if the field type is an array or a map you can define a specific list of values([1,2,3,4,5] or [ key1:value1, key2:value2, key3:value3]).
@@ -98,11 +98,11 @@ We will see 4 columns where we will configure the Random Generator system.
 
 Java Sampler who manage the connection against the mongo cluster and data injection.
 
-  * **hostname** : Mongodb server hort name or Master server in a Mongo Cluster.
-  * **port** : Mongodb server port.
-  * **username** : User name allowed to insert documents.
-  * **password** : Password for the account.
-  * **url** : URl connection against a MongoDB Cluster.
-  * **operation** : Operation to execute insert/update.
+  *  **hostname** : Mongodb server hort name or Master server in a Mongo Cluster.
+  *  **port** : Mongodb server port.
+  *  **username** : User name allowed to insert documents.
+  *  **password** : Password for the account.
+  *  **url** : URl connection against a MongoDB Cluster.
+  *  **operation** : Operation to execute insert/update.
 
 ![MLoadGen Schema Sampler](/Java_Request_-_MLoadGen_Gen_Schema_Sampler.png)
