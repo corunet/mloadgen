@@ -1,5 +1,7 @@
 # MLoadGen - JSON Schema/JSchema + Mongo Load Generator
 
+[![Build Status](https://api.travis-ci.org/corunet/mloadgen.svg?branch=master)](https://travis-ci.org/corunet/mloadgen)
+
 ---
 
 Mloadgen is a Mongo Document injector for MongoDB. It let you insert documents in the specified collection.
