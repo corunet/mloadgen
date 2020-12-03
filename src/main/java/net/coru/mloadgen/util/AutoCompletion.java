@@ -108,7 +108,7 @@ public class AutoCompletion extends javax.swing.text.PlainDocument {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
-    new net.coru.mloadgen.util.AutoCompletion(comboBox);
+    new AutoCompletion(comboBox);
   }
 
   private void configureEditor(ComboBoxEditor newEditor) {
