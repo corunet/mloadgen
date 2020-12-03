@@ -14,7 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import net.coru.mloadgen.extractor.parser.SchemaParser;
-import net.coru.mloadgen.model.json.*;
+import net.coru.mloadgen.model.json.ArrayField;
+import net.coru.mloadgen.model.json.BooleanField;
+import net.coru.mloadgen.model.json.DateField;
+import net.coru.mloadgen.model.json.EnumField;
+import net.coru.mloadgen.model.json.Field;
+import net.coru.mloadgen.model.json.IntegerField;
+import net.coru.mloadgen.model.json.MapField;
+import net.coru.mloadgen.model.json.NumberField;
+import net.coru.mloadgen.model.json.ObjectField;
+import net.coru.mloadgen.model.json.Schema;
+import net.coru.mloadgen.model.json.StringField;
 import org.apache.commons.collections4.CollectionUtils;
 
 public class JSchemaParser implements SchemaParser {

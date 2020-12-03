@@ -6,6 +6,11 @@
 
 package net.coru.mloadgen.config.fileserialized;
 
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
+import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
+import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
+
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +23,6 @@ import org.apache.jmeter.engine.event.LoopIterationListener;
 import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.threads.JMeterVariables;
-
-import java.util.List;
-
-
-import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
-import static net.coru.mloadgen.util.PropsKeysHelper.JSON_SCHEMA;
-import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
 
 @Getter
 @Setter

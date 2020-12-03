@@ -6,12 +6,11 @@
 
 package net.coru.mloadgen.extractor;
 
-import net.coru.mloadgen.model.FieldValueMapping;
-import net.coru.mloadgen.model.json.Schema;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import net.coru.mloadgen.model.FieldValueMapping;
+import net.coru.mloadgen.model.json.Schema;
 
 public interface SchemaExtractor {
 

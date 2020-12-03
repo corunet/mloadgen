@@ -6,18 +6,17 @@
 
 package net.coru.mloadgen.input.json;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.jmeter.gui.ClearGui;
-import org.apache.jmeter.testbeans.gui.TestBeanPropertyEditor;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditorSupport;
 import java.util.Objects;
+import javax.swing.JPanel;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.jmeter.gui.ClearGui;
+import org.apache.jmeter.testbeans.gui.TestBeanPropertyEditor;
 
 @Slf4j
 public class SchemaConverterPropertyEditor extends PropertyEditorSupport implements ActionListener, TestBeanPropertyEditor, ClearGui {

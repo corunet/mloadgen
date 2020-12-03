@@ -6,15 +6,13 @@
 
 package net.coru.mloadgen.config.fileserialized;
 
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import net.coru.mloadgen.input.json.FileSubjectPropertyEditor;
-import net.coru.mloadgen.input.json.SchemaConverterPropertyEditor;
 import net.coru.mloadgen.model.FieldValueMapping;
 import org.apache.jmeter.testbeans.BeanInfoSupport;
 import org.apache.jmeter.testbeans.gui.TableEditor;
 import org.apache.jmeter.testbeans.gui.TypeEditor;
-
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
 
 public class FileSerializedConfigElementBeanInfo extends BeanInfoSupport {
 

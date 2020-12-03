@@ -6,13 +6,12 @@
 
 package net.coru.mloadgen.util;
 
-import net.coru.mloadgen.model.ConstraintTypeEnum;
-import org.apache.jmeter.threads.JMeterContextService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.coru.mloadgen.model.ConstraintTypeEnum;
+import org.apache.jmeter.threads.JMeterContextService;
 
 public class StatelessRandomTool {
 
