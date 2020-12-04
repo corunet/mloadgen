@@ -2,40 +2,41 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-package net.coru.mloadgen;
+package net.coru.mloadgen.sampler;
 
-import static net.coru.mloadgen.MLoadGenConfigHelper.COLLECTION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DBNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DELETE_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.DOCUMENT;
-import static net.coru.mloadgen.MLoadGenConfigHelper.FILTER;
-import static net.coru.mloadgen.MLoadGenConfigHelper.INSERT_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_HOSTNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_PASSWORD;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_PORT;
-import static net.coru.mloadgen.MLoadGenConfigHelper.MONGODB_USERNAME;
-import static net.coru.mloadgen.MLoadGenConfigHelper.OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.QUERY_OPERATION;
-import static net.coru.mloadgen.MLoadGenConfigHelper.UPDATE_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.COLLECTION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.DBNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.FILTER;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.INSERT_OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_HOSTNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PASSWORD;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_PORT;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_URL;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.MONGODB_USERNAME;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.OPERATION;
+import static net.coru.mloadgen.sampler.MLoadGenConfigHelper.UPDATE_OPERATION;
+import static net.coru.mloadgen.util.PropsKeysHelper.SCHEMA_PROPERTIES;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCommandException;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.MongoSecurityException;
 import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Objects;
+import net.coru.mloadgen.model.FieldValueMapping;
+import net.coru.mloadgen.processor.JsonSchemaProcessor;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
@@ -43,13 +44,15 @@ import org.apache.jmeter.samplers.SampleResult;
 import org.bson.Document;
 import org.slf4j.Logger;
 
-public class MLoadGen extends AbstractJavaSamplerClient {
+public class MLoadGenSchemaSampler extends AbstractJavaSamplerClient {
 
   private Logger log;
 
   private MongoClient mongoClient;
 
   private MongoDatabase database;
+
+  private final JsonSchemaProcessor processor = new JsonSchemaProcessor();
 
   @Override
   public Arguments getDefaultParameters() {
@@ -58,11 +61,9 @@ public class MLoadGen extends AbstractJavaSamplerClient {
     defaultParameters.addArgument(MONGODB_PORT, "27017");
     defaultParameters.addArgument(MONGODB_USERNAME, "<username>");
     defaultParameters.addArgument(MONGODB_PASSWORD, "<password>");
+    defaultParameters.addArgument(MONGODB_URL, "<mongo url>");
     defaultParameters.addArgument(DBNAME, "<dbname>");
     defaultParameters.addArgument(OPERATION, "insert");
-    defaultParameters.addArgument(COLLECTION, "<collection>");
-    defaultParameters.addArgument(FILTER, "<filter>");
-    defaultParameters.addArgument(DOCUMENT, "<document>");
     return defaultParameters;
   }
 
@@ -75,6 +76,7 @@ public class MLoadGen extends AbstractJavaSamplerClient {
       final int port = Integer.parseInt(context.getParameter(MONGODB_PORT));
       String dbName = context.getParameter(DBNAME);
       String username = context.getParameter(MONGODB_USERNAME);
+      String url = context.getParameter(MONGODB_URL);
       char[] password = context.getParameter(MONGODB_PASSWORD).toCharArray();
 
       MongoCredential credential = MongoCredential.createCredential(username, dbName, password);
@@ -84,18 +86,25 @@ public class MLoadGen extends AbstractJavaSamplerClient {
               builder.hosts(Collections.singletonList( new ServerAddress(hostname, port))).build())
           .build();
 
-      mongoClient = MongoClients.create(settings);
+      mongoClient = mongoUrlValidation(url)? MongoClients.create(url) : MongoClients.create(settings);
 
-      String collection = context.getParameter(COLLECTION);
+      String collection = context.getJMeterVariables().get(COLLECTION);
       database = mongoClient.getDatabase(dbName);
 
-      List<String> colNameList = new ArrayList<>();
-      database.listCollectionNames().into(colNameList);
-      if (!colNameList.contains(collection)) {
-        log.error("Collection {} doesn't exist in database", collection);
-        throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+      try {
+        List<String> colNameList = new ArrayList<>();
+        database.listCollectionNames().into(colNameList);
+
+        if (!colNameList.contains(collection)) {
+          log.error("Collection {} doesn't exist in database", collection);
+          throw new IllegalArgumentException("Collection " + collection + " doesn't exist in Database" );
+        }
+      } catch (MongoCommandException | MongoSecurityException ex) {
+        log.warn("No permission to check if collection exists. Continuing operation");
       }
 
+      List<FieldValueMapping> schemaProperties = (List<FieldValueMapping>) context.getJMeterVariables().getObject(SCHEMA_PROPERTIES);
+      processor.processSchema(schemaProperties);
     }
     super.setupTest(context);
   }
@@ -109,29 +118,19 @@ public class MLoadGen extends AbstractJavaSamplerClient {
   public SampleResult runTest(JavaSamplerContext context) {
     SampleResult sampleResult = new SampleResult();
     sampleResult.sampleStart();
-    String collection = context.getParameter(COLLECTION);
+    String collection = context.getJMeterVariables().get(COLLECTION);
 
     try {
 
-      String result = null;
+      String document = processor.next().toString();
+      String result;
       if (INSERT_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         result = runInsertCommand(collection, document);
-      } else if (QUERY_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String filter = context.getParameter(FILTER);
-        sampleResult.setSamplerData(filter);
-        result = runQueryCommand(collection, filter);
       } else if (UPDATE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION))) {
-        String document = context.getParameter(DOCUMENT);
         sampleResult.setSamplerData(document);
         String filter = context.getParameter(FILTER);
         result = runUpdateCommand(collection, filter, document);
-      } else if (DELETE_OPERATION.equalsIgnoreCase(context.getParameter(OPERATION)))
-      {
-        String filter = context.getParameter(FILTER);
-        sampleResult.setSamplerData(filter);
-        result = runDeleteCommand(collection, filter);
       } else {
         throw new IllegalArgumentException("Wrong operation " + context.getParameter(OPERATION));
       }
@@ -168,16 +167,6 @@ public class MLoadGen extends AbstractJavaSamplerClient {
     return document;
   }
 
-  private String runQueryCommand(String collection, String filter) {
-    BasicDBObject mongoQuery = BasicDBObject.parse(filter);
-
-    StringBuilder resultSB = new StringBuilder();
-    FindIterable<Document> response = database.getCollection(collection).find(mongoQuery);
-    response.forEach((Consumer<? super Document>) resDoc -> resultSB.append(resDoc.toJson()));
-
-    return resultSB.toString();
-  }
-
   private String runUpdateCommand(String collection, String filter,  String document) {
     BasicDBObject mongoFilter = BasicDBObject.parse(filter);
     Document mongoDocument = Document.parse(document);
@@ -187,11 +176,13 @@ public class MLoadGen extends AbstractJavaSamplerClient {
     return response.toString();
   }
 
-  private String runDeleteCommand(String collection, String filter) {
-    BasicDBObject mongoFilter = BasicDBObject.parse(filter);
-
-    DeleteResult response = database.getCollection(collection).deleteMany(mongoFilter);
-
-    return response.toString();
+  private Boolean mongoUrlValidation(String mongoUrl) {
+    if(mongoUrl.isEmpty() || Objects.isNull(mongoUrl) || mongoUrl.equals("<mongo url>"))
+    {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

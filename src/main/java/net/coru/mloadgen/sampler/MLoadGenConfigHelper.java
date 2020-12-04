@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-package net.coru.mloadgen;
+package net.coru.mloadgen.sampler;
 
 public interface MLoadGenConfigHelper {
 
@@ -13,6 +13,8 @@ public interface MLoadGenConfigHelper {
    String MONGODB_USERNAME = "username";
 
    String MONGODB_PASSWORD = "password";
+
+   String MONGODB_URL = "url";
 
    String DBNAME = "dbname";
 

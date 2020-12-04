@@ -1,0 +1,14 @@
+{
+  "name": "string",
+  "surname": "string",
+  "address": {
+    "street": "string",
+    "number": "number"
+  },
+  "contactData": {
+    "map_of": {
+      "mobile": "boolean",
+      "email": "string"
+    }
+  }
+}

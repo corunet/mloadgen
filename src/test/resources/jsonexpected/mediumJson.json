@@ -1,0 +1,8 @@
+{
+  "name": "name",
+  "surname": "surname",
+  "address": {
+    "street": "address",
+    "number": 0
+  }
+}
